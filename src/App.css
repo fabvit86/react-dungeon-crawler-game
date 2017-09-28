@@ -13,3 +13,7 @@
   border: 1px solid;
   border-color: black; 
 }
+
+.tile.roomTile {
+  background-color: brown;
+}

@@ -8,10 +8,13 @@ class App extends Component {
     this.state = {
       gameId: 1
     }
-    // default board size:
+    // default board values:
     this.rows = 100
-    this.columns = 150
-    this.rooms = 15
+    this.columns = 100
+    this.minRooms = 15
+    this.maxRooms = 20
+    this.minRoomSide = 8
+    this.maxRoomSide = 15
   }
 
   // change the gameId to render a new game:
@@ -27,7 +30,10 @@ class App extends Component {
           key={this.state.gameId}
           rows={this.rows}
           columns={this.columns}
-          rooms={this.rooms}
+          minRooms={this.minRooms}
+          maxRooms={this.maxRooms}
+          minRoomSide={this.minRoomSide}
+          maxRoomSide={this.maxRoomSide}
         />
       </div>
     )
