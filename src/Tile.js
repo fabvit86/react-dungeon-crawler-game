@@ -10,7 +10,7 @@ class Tile extends Component {
   render () {
     return (
       <div
-        id={this.props.tileData.id}
+        key={this.props.tileData.id}
         className={'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room}
       />
     )
