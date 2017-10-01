@@ -70,13 +70,11 @@ class Board extends Component {
       horizontalSize: horizontalSide,
       verticalSize: verticalSide
     })
-    this.placeNextRoom(board, 1, 1)
-    console.log(this.rooms)
+    this.createRooms(board, 1, 1)
   }
 
   // assign the tiles to a room if possible:
   assignRoomTiles (board, x, y, verticalSide, horizontalSide, roomIndex) {
-    console.log('placing room number',roomIndex,'from:',x,y,'size=',horizontalSide,'x',verticalSide) //TEST
     let assignedTiles = []
     for (let i = x; i < x + verticalSide; i++) {
       for (let j = y; j < y + horizontalSide; j++) {
@@ -104,115 +102,82 @@ class Board extends Component {
     return true // all tiles assigned successfully
   }
 
-  placeNextRoom(board, placedRooms, neighborRoomStep) {
-    console.log('placedRooms:',placedRooms, 'neighborRoomStep=',neighborRoomStep) // TEST
+  placeRoom (board, neighborRoom, horizontalSide, verticalSide, placedRooms, position) {
+    let x, y, offset // starting coordinates of the new room
+    switch (position) {
+    case 'top': 
+    case 'bottom':
+      position === 'top' ? x = (neighborRoom.topX - 1 - verticalSide) : x = (neighborRoom.bottomX + 2)
+      offset = Math.abs(Math.ceil((neighborRoom.horizontalSize - horizontalSide) / 2)) // used to center it horizontally on top of the other
+      y = neighborRoom.leftY + offset
+      //if current room is horizontally bigger than neighbor room, check if exceeds left or right border:
+      if (horizontalSide > neighborRoom.horizontalSize) {
+        const extraTiles = horizontalSide - neighborRoom.horizontalSize
+        neighborRoom.leftY - extraTiles < 0 ? y = neighborRoom.leftY : y = neighborRoom.leftY - extraTiles
+      }
+      break
+    case 'left':
+    case 'right':
+      position === 'left' ? y = (neighborRoom.leftY - 1 - horizontalSide) : y = (neighborRoom.rightY + 2)
+      offset = Math.abs(Math.ceil((neighborRoom.verticalSize - verticalSide) / 2))
+      x = neighborRoom.topX + offset
+      //if current room is vertically bigger than neighbor room, check if exceeds top or bottom border:
+      if (verticalSide > neighborRoom.verticalSize) {
+        const extraTiles = verticalSide - neighborRoom.verticalSize
+        neighborRoom.topX - extraTiles < 0 ? x = neighborRoom.topX : x = neighborRoom.topX - extraTiles
+      }
+      break
+    default: 
+      return false
+    }
+    return this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1)
+  }
+
+  // create all the dungeon's rooms recursively
+  createRooms(board, placedRooms, neighborRoomStep) {
     if (placedRooms === this.numberOfRooms) return
     // size of the new room:
     const horizontalSide = this.getRandomNumb(this.props.minRoomSide, this.props.maxRoomSide)
     const verticalSide = this.getRandomNumb(this.props.minRoomSide, this.props.maxRoomSide)
     
-    let x, y // starting coordinates of the new room
     const neighborRoomIndex = this.rooms.length - neighborRoomStep
 
-    // if there is no space left on the board, stop execution:
+    // if there is no space left on the board, stop trying to add more rooms:
     if (neighborRoomIndex < 0) { // this is true if every room has been examined
-      console.log('neighborRoomIndex', neighborRoomIndex, 'board full') //TEST
       return 
     }
     const neighborRoom = this.rooms[neighborRoomIndex]
     let roomAssigned = false
 
-    // borders check:
+    // borders overflow check:
     // check if there is enough space on the top:
     if (!roomAssigned && neighborRoom.topX - 1 - verticalSide >= 0) {
-      let yOffset = Math.abs(Math.ceil((neighborRoom.horizontalSize - horizontalSide) / 2)) // used to center it horizontally on top of the other
-      x = neighborRoom.topX - 1 - verticalSide
-      y = neighborRoom.leftY + yOffset
-      //if current room is horizontally bigger than neighbor room, check if exceeds left or right border:
-      if (horizontalSide > neighborRoom.horizontalSize) {
-        const extraTiles = horizontalSide - neighborRoom.horizontalSize
-        // check left border overflow:
-        neighborRoom.leftY - extraTiles < 0 ? y = neighborRoom.leftY : y = neighborRoom.leftY - extraTiles
-      }
-      // place the room on top of the neighbor room, skipping one tile row for the corridor:
-      roomAssigned = this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1)
-      // room created successfully:
-      if (roomAssigned) { 
-        placedRooms++
-      } else {
-        console.log('top space already occupied') //placeholder
-      }
-    } 
+      roomAssigned = this.placeRoom(board, neighborRoom, horizontalSide, verticalSide, placedRooms, 'top')
+    }
     // check if there is enough space on the bottom:
     if (!roomAssigned && neighborRoom.bottomX + 1 + verticalSide < this.props.rows) {
-      let yOffset = Math.abs(Math.ceil((neighborRoom.horizontalSize - horizontalSide) / 2))
-      x = neighborRoom.bottomX + 2
-      y = neighborRoom.leftY + yOffset
-      //if current room is horizontally bigger than neighbor room, there must be space horizontally too:
-      if (horizontalSide > neighborRoom.horizontalSize) {
-        const extraTiles = horizontalSide - neighborRoom.horizontalSize
-        // check left border overflow:
-        neighborRoom.leftY - extraTiles < 0 ? y = neighborRoom.leftY : y = neighborRoom.leftY - extraTiles
-      }
-      // place the room under the neighbor room, leaving skipping one tile row for the corridor:
-      roomAssigned = this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1)
-      // room created successfully:
-      if (roomAssigned) { 
-        placedRooms++
-      } else {
-        console.log('bottom space already occupied') //placeholder
-      }
+      roomAssigned = this.placeRoom(board, neighborRoom, horizontalSide, verticalSide, placedRooms, 'bottom')
     } 
     // check if there is enough space on the left:
     if (!roomAssigned && neighborRoom.leftY - 1 - horizontalSide >= 0) {
-      let xOffset = Math.abs(Math.ceil((neighborRoom.verticalSize - verticalSide) / 2))
-      x = neighborRoom.topX + xOffset
-      y = neighborRoom.leftY - 1 - horizontalSide
-      //if current room is vertically bigger than neighbor room, there must be space vertically too:
-      if (verticalSide > neighborRoom.verticalSize) {
-        const extraTiles = verticalSide - neighborRoom.verticalSize
-        // check top border overflow:
-        neighborRoom.topX - extraTiles < 0 ? x = neighborRoom.topX : x = neighborRoom.topX - extraTiles
-      }
-      // place the room left to the neighbor room, leaving skipping one tile row for the corridor:
-      roomAssigned = this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1)
-      // room created successfully:
-      if (roomAssigned) { 
-        placedRooms++
-      } else {
-        console.log('left space already occupied') //placeholder
-      }
+      roomAssigned = this.placeRoom(board, neighborRoom, horizontalSide, verticalSide, placedRooms, 'left')
     }
     // check if there is enough space on the right:
     if (!roomAssigned && neighborRoom.rightY + 1 + horizontalSide < this.props.columns) {
-      let xOffset = Math.abs(Math.ceil((neighborRoom.verticalSize - verticalSide) / 2))
-      x = neighborRoom.topX + xOffset
-      y = neighborRoom.rightY + 2
-      //if current room is vertically bigger than neighbor room, there must be space vertically too:
-      if (verticalSide > neighborRoom.verticalSize) {
-        const extraTiles = verticalSide - neighborRoom.verticalSize
-        // check top border overflow:
-        neighborRoom.topX - extraTiles < 0 ? x = neighborRoom.topX : x = neighborRoom.topX - extraTiles
-      }
-      // place the room left to the neighbor room, leaving skipping one tile row for the corridor:
-      roomAssigned = this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1)
+      roomAssigned = this.placeRoom(board, neighborRoom, horizontalSide, verticalSide, placedRooms, 'right')
+    }
+    
+    if (roomAssigned) { 
       // room created successfully:
-      if (roomAssigned) { 
-        placedRooms++
-      } else {
-        console.log('right space already occupied') //placeholder
-      }
-    } 
-    // no space around this room, try another room:
-    if (!roomAssigned) {
-      console.log('no space around this room, try another room')
-      neighborRoomStep++
-    } else {
+      placedRooms++
       neighborRoomStep = 1
+    } else {
+      // there was no space around this room, try another room incrementing neighborRoomStep:
+      neighborRoomStep++
     }
 
     // recursive call:
-    this.placeNextRoom(board, placedRooms, neighborRoomStep)
+    this.createRooms(board, placedRooms, neighborRoomStep)
   }
 
   componentDidMount () {
