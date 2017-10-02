@@ -28,7 +28,7 @@ class Board extends Component {
       let row = []
       ;for (let c = 0; c < m; c++) {
         row.push({
-          id: `${r}${c}`,
+          id: `${r}-${c}`,
           rowIndex: r,
           colIndex: c,
           status: 'empty',
@@ -85,7 +85,10 @@ class Board extends Component {
         // check if the tile is not already assigned to a room:
         if (board[i][j].status !== 'empty'){
           // unset previously assigned tiles:
-          assignedTiles.forEach((element) => board[element.rowIndex][element.columnIndex].status = 'empty')
+          assignedTiles.forEach((element) => {
+            board[element.rowIndex][element.columnIndex].status = 'empty'
+            board[element.rowIndex][element.columnIndex].room = 0
+          })
           return false
         }
         board[i][j].status = 'roomTile' // indicates that this tile belongs to a room
@@ -225,6 +228,8 @@ class Board extends Component {
         <Hero 
           board={this.board}
           position={this.initialHeroPosition}
+          rows={this.props.rows}
+          columns={this.props.columns}
         />
         {this.board.map((currentRow) =>
           currentRow.map((currentTile) => {
@@ -237,9 +242,6 @@ class Board extends Component {
             )
           })
         )}
-        {
-          // console.log(this.board[0][0]) //TEST
-        }
       </div> 
     )
   }

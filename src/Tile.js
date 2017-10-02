@@ -19,8 +19,9 @@ class Tile extends Component {
   render () {
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
     if (this.state.occupier === 'hero') {
-      classes += ' heroTile'
+      classes += ' heroTile occupiedTile'
     }
+    console.log('rendering tile', this.props.tileData.id) // TEST
     return (
       <div
         key={this.props.tileData.id}
