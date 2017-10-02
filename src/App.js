@@ -9,8 +9,8 @@ class App extends Component {
       gameId: 1
     }
     // default board values:
-    this.rows = 100
-    this.columns = 100
+    this.rows = 60
+    this.columns = 80
     // this.rows = 50 // test
     // this.columns = 50 // test
     this.minRooms = 15

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
-import _ from 'lodash'
+// import _ from 'lodash'
 import $ from 'jquery'
 window.jQuery = $
 window.$ = $
@@ -11,7 +11,7 @@ class Board extends Component {
     this.rooms = []
     this.numberOfRooms = 0
     this.board = this.createBoard(this.props.rows, this.props.columns)
-    this.flattedBoard = _.flatten(this.board)
+    // this.flattedBoard = _.flatten(this.board)
   }
 
   // create the game board with the given number of rooms:
@@ -49,8 +49,8 @@ class Board extends Component {
     const horizontalSide = this.getRandomNumb(minRoomSide, maxRoomSide) // horizontal length
     const verticalSide = this.getRandomNumb(minRoomSide, maxRoomSide) // vertical length
     // find the random starting coordinate to place the first room:
-    const x = this.getRandomNumb(0, this.props.columns - horizontalSide)
-    const y = this.getRandomNumb(0, this.props.rows - verticalSide)
+    const x = this.getRandomNumb(0, this.props.rows - verticalSide)
+    const y = this.getRandomNumb(0, this.props.columns - horizontalSide)
     // const horizontalSide = 8, verticalSide = 8 // TEST
     // const x = 10, y = 0 //TEST
     // place the first room:
@@ -74,7 +74,7 @@ class Board extends Component {
   }
 
   // assign the tiles to a room if possible:
-  assignRoomTiles (board, x, y, verticalSide, horizontalSide, roomIndex) {
+  assignRoomTiles (board, x, y, verticalSide, horizontalSide, roomIndex, xCorridor, yCorridor) {
     let assignedTiles = []
     for (let i = x; i < x + verticalSide; i++) {
       for (let j = y; j < y + horizontalSide; j++) {
@@ -89,6 +89,8 @@ class Board extends Component {
         assignedTiles.push({rowIndex: i, columnIndex: j})
       }
     }
+    // create corridor between rooms:
+    board[xCorridor][yCorridor].status = 'roomTile'
     // add the room:
     this.rooms.push({
       roomId: roomIndex,
@@ -104,10 +106,17 @@ class Board extends Component {
 
   placeRoom (board, neighborRoom, horizontalSide, verticalSide, placedRooms, position) {
     let x, y, offset // starting coordinates of the new room
+    let xCorridor, yCorridor // coordinates of the corridor
     switch (position) {
     case 'top': 
     case 'bottom':
-      position === 'top' ? x = (neighborRoom.topX - 1 - verticalSide) : x = (neighborRoom.bottomX + 2)
+      if (position === 'top') {
+        x = neighborRoom.topX - 1 - verticalSide
+        xCorridor = neighborRoom.topX - 1
+      } else {
+        x = neighborRoom.bottomX + 2
+        xCorridor = neighborRoom.bottomX + 1
+      }
       offset = Math.abs(Math.ceil((neighborRoom.horizontalSize - horizontalSide) / 2)) // used to center it horizontally on top of the other
       y = neighborRoom.leftY + offset
       //if current room is horizontally bigger than neighbor room, check if exceeds left or right border:
@@ -115,10 +124,17 @@ class Board extends Component {
         const extraTiles = horizontalSide - neighborRoom.horizontalSize
         neighborRoom.leftY - extraTiles < 0 ? y = neighborRoom.leftY : y = neighborRoom.leftY - extraTiles
       }
+      yCorridor = y + Math.floor(horizontalSide / 2)
       break
     case 'left':
     case 'right':
-      position === 'left' ? y = (neighborRoom.leftY - 1 - horizontalSide) : y = (neighborRoom.rightY + 2)
+      if (position === 'left') {
+        y = neighborRoom.leftY - 1 - horizontalSide
+        yCorridor = neighborRoom.leftY - 1
+      } else {
+        y = neighborRoom.rightY + 2
+        yCorridor = neighborRoom.rightY + 1
+      }
       offset = Math.abs(Math.ceil((neighborRoom.verticalSize - verticalSide) / 2))
       x = neighborRoom.topX + offset
       //if current room is vertically bigger than neighbor room, check if exceeds top or bottom border:
@@ -126,11 +142,12 @@ class Board extends Component {
         const extraTiles = verticalSide - neighborRoom.verticalSize
         neighborRoom.topX - extraTiles < 0 ? x = neighborRoom.topX : x = neighborRoom.topX - extraTiles
       }
+      xCorridor = x + Math.floor(verticalSide / 2)
       break
     default: 
       return false
     }
-    return this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1)
+    return this.assignRoomTiles (board, x, y, verticalSide, horizontalSide, placedRooms + 1, xCorridor, yCorridor)
   }
 
   // create all the dungeon's rooms recursively
@@ -144,6 +161,7 @@ class Board extends Component {
 
     // if there is no space left on the board, stop trying to add more rooms:
     if (neighborRoomIndex < 0) { // this is true if every room has been examined
+      this.numberOfRooms = placedRooms
       return 
     }
     const neighborRoom = this.rooms[neighborRoomIndex]
