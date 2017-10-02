@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
-// import _ from 'lodash'
+import Hero from './Hero'
+import _ from 'lodash'
 import $ from 'jquery'
 window.jQuery = $
 window.$ = $
@@ -11,7 +12,10 @@ class Board extends Component {
     this.rooms = []
     this.numberOfRooms = 0
     this.board = this.createBoard(this.props.rows, this.props.columns)
-    // this.flattedBoard = _.flatten(this.board)
+    this.initialHeroPosition = this.setInitialHeroPosition()
+    this.state = {
+      dungeonLevel: 1
+    }
   }
 
   // create the game board with the given number of rooms:
@@ -198,6 +202,14 @@ class Board extends Component {
     this.createRooms(board, placedRooms, neighborRoomStep)
   }
 
+  // find a random room tile to position the hero:
+  setInitialHeroPosition () {
+    const flattedBoard = _.flatten(this.board)
+    const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile')
+    const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
+    return { x: randomRoomTile.rowIndex, y: randomRoomTile.colIndex }
+  }
+
   componentDidMount () {
     // set the size of the board:
     const tileSize = 10 // pixels
@@ -210,16 +222,24 @@ class Board extends Component {
   render () {
     return (
       <div id='board'>
+        <Hero 
+          board={this.board}
+          position={this.initialHeroPosition}
+        />
         {this.board.map((currentRow) =>
           currentRow.map((currentTile) => {
             return (
               <Tile 
                 key={currentTile.id}
                 tileData={currentTile}
+                initialHeroPosition={this.initialHeroPosition}
               />
             )
           })
         )}
+        {
+          // console.log(this.board[0][0]) //TEST
+        }
       </div> 
     )
   }

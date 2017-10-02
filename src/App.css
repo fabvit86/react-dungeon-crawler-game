@@ -3,6 +3,7 @@
 }
 
 #board {
+  position: relative;
   display: inline-block;
 }
 
@@ -16,4 +17,9 @@
 
 .tile.roomTile {
   background-color: brown;
+}
+
+.tile.heroTile {
+  background-color: black;
+  z-index: 999;
 }
