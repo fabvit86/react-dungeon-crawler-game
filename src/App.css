@@ -11,16 +11,20 @@
   float: left;
   width: 20px;
   height: 20px;
-  border: 1px solid;
-  border-color: black; 
+  /*border: 1px solid;*/
+  /*border-color: black; */
+}
+
+.tile.empty {
+  background-image: url('assets/images/game-sprites/wall_vines_0.png')
 }
 
 .tile.roomTile {
-  background-color: brown;
+  background-image: url('assets/images/game-sprites/sand_1.png')
 }
 
 .tile.heroTile {
-  background-color: green;
+  /*background-color: green;*/
 }
 
 .gameSprite {
