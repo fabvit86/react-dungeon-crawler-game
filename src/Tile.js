@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import heroImage from './assets/images/game-sprites/human_male.png'
-import chestImage from './assets/images/game-sprites/chest.png'
+import treasureChestImage from './assets/images/game-sprites/chest.png'
 
 class Tile extends Component {
   constructor (props) {
@@ -15,11 +15,11 @@ class Tile extends Component {
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
     let img = ''
     if (this.state.occupier === 'hero') {
-      classes += ' heroTile occupiedTile'
+      classes += ' heroTile'
       img = <img className="gameSprite" id="heroImage" src={heroImage} alt='hero'/>
     } else if (this.state.occupier === 'item') {
-      classes += ' itemTile occupiedTile'
-      img = <img className="gameSprite" id="chestImage" src={chestImage} alt='chest'/>
+      classes += ' itemTile'
+      img = <img className="gameSprite" id="chestImage" src={treasureChestImage} alt='chest'/>
     }
     return (
       <div

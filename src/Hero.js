@@ -1,5 +1,10 @@
 import React, { Component } from 'react'
 import heroImage from './assets/images/game-sprites/human_male.png'
+import chestArmorImage from './assets/images/game-sprites/scalemail_2.png'
+import legsImage from './assets/images/game-sprites/leg_armor_1.png'
+import glovesImage from './assets/images/game-sprites/glove_gray.png'
+import helmImage from './assets/images/game-sprites/helm_plume.png'
+import swordImage from './assets/images/game-sprites/sword_3.png'
 import $ from 'jquery'
 window.jQuery = $
 window.$ = $
@@ -7,18 +12,55 @@ window.$ = $
 class Hero extends Component {
   constructor (props) {
     super(props)
-    this.health = 100
-    this.attack = 10
-    this.level = 1
-    this.weapon = 1
-    this.resistance = 0 // increses with armor items
+    this.pickedUpItems = []
+    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero-image" />'
     this.state = {
-      position: this.props.position // x and y coordinates
+      position: this.props.position, // x and y coordinates
+      health: 100,
+      attack: 10, // increses with weapon item
+      level: 1,
+      weapon: 'none',
+      resistance: 0 // increses with armor items
     }
   }
 
   componentDidMount () {
     this.moveHero()
+  }
+
+  // check which item has been picked up:
+  pickUpItem (itemX, itemY) {
+    const filteredItems = this.props.items.filter((item) => item.position.x === itemX && item.position.y === itemY)
+    this.pickedUpItems.push(filteredItems[0])
+    this.dressUp()
+  }
+
+  // change hero image based on the item picked up:
+  dressUp () {
+    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero-image" />'
+    this.pickedUpItems.forEach((element) => {
+      let img
+      switch (element.itemName) {
+      case 'chest armor':
+        img = chestArmorImage
+        break
+      case 'leg armor':
+        img = legsImage
+        break
+      case 'helm':
+        img = helmImage
+        break
+      case 'gloves':
+        img = glovesImage
+        break
+      case 'sword':
+        img = swordImage
+        break
+      default:
+        return
+      }
+      this.heroImage += '<img class="gameSprite" src="' + img +'" alt="'+ element.itemName +'Image"/>'
+    })
   }
 
   moveHero () {
@@ -48,11 +90,18 @@ class Hero extends Component {
       const oldTileSelector = '#tile'+this.state.position.x+'-'+this.state.position.y
       const newTileSelector = '#tile'+nextX+'-'+nextY
       if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns &&
-          !$(newTileSelector).hasClass('occupied') && $(newTileSelector).hasClass('roomTile')) {
-        $(oldTileSelector).removeClass('heroTile occupied')
+          $(newTileSelector).hasClass('roomTile')) {
+        $(oldTileSelector).removeClass('heroTile')
         $(oldTileSelector + ' img').remove()
-        $(newTileSelector).addClass('heroTile occupied')
-        $(newTileSelector).html('<img class="gameSprite" id="heroImage" src="'+heroImage+'">')
+        $(newTileSelector).addClass('heroTile')
+        // update hero image:
+        $(newTileSelector).html(this.heroImage)
+        // hit an item chest:
+        if ($(newTileSelector).hasClass('itemTile')) {
+          this.pickUpItem(nextX, nextY)
+          $(newTileSelector).html(this.heroImage)
+          $(newTileSelector).removeClass('itemTile')
+        }
         // update hero position:
         this.setState({position: {x: nextX, y: nextY} })
       }

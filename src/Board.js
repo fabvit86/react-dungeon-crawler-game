@@ -211,7 +211,7 @@ class Board extends Component {
   }
 
   // randomly place hero and items:
-  placeHeroAndItems (type, itemType) {
+  placeHeroAndItems (type) {
     const flattedBoard = _.flatten(this.board)
     const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile' && element.occupier === 'none')
     const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
@@ -238,6 +238,7 @@ class Board extends Component {
           position={this.initialHeroPosition}
           rows={this.props.rows}
           columns={this.props.columns}
+          items={this.items}
         />
         {this.items.map((element, index) => {
           return (

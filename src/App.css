@@ -8,6 +8,7 @@
 }
 
 .tile {
+  position: relative;
   float: left;
   width: 20px;
   height: 20px;
@@ -28,9 +29,12 @@
 }
 
 .gameSprite {
-  display: block;
+  /*display: block;*/
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 20px;
   height: 20px;
-  z-index: 9999;
+  z-index: 99;
 }
 

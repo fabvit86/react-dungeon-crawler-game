@@ -16,10 +16,10 @@ class App extends Component {
     this.minRoomSide = 8
     this.maxRoomSide = 15
     this.items = [
-      {itemType: 'armor', itemName: 'chest armor', resistance: 5}, 
-      {itemType: 'armor', itemName: 'leg armor', resistance: 3},
-      {itemType: 'armor', itemName: 'helm', resistance: 2}, 
-      {itemType: 'armor', itemName: 'gloves', resistance: 1},
+      {itemType: 'armor', itemName: 'chest armor', resistance: 5, 'img': 'scalemail_2.png'}, 
+      {itemType: 'armor', itemName: 'leg armor', resistance: 3, img: 'leg_armor_1.png'},
+      {itemType: 'armor', itemName: 'helm', resistance: 2, img: 'helm_plume.png'}, 
+      {itemType: 'armor', itemName: 'gloves', resistance: 1, img: 'glove_gray.png'},
       // {itemType: 'weapon', itemName: 'knife', attack: 5},
       // {itemType: 'weapon', itemName: 'mace', attack: 8},
       {itemType: 'weapon', itemName: 'sword', attack: 10}
