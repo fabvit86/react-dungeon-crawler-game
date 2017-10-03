@@ -1,19 +1,12 @@
 import React, { Component } from 'react'
 import heroImage from './assets/images/game-sprites/human_male.png'
+import chestImage from './assets/images/game-sprites/chest.png'
 
 class Tile extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      occupier: 'none'
-    }
-  }
-
-  componentWillMount () {
-    // check if this tile contains the hero:
-    if (this.props.initialHeroPosition.x === this.props.tileData.rowIndex && 
-        this.props.initialHeroPosition.y === this.props.tileData.colIndex) {
-      this.setState({occupier: 'hero'})
+      occupier: this.props.tileData.occupier
     }
   }
 
@@ -24,6 +17,9 @@ class Tile extends Component {
     if (this.state.occupier === 'hero') {
       classes += ' heroTile occupiedTile'
       img = <img className="gameSprite" id="heroImage" src={heroImage} alt='hero'/>
+    } else if (this.state.occupier === 'item') {
+      classes += ' itemTile occupiedTile'
+      img = <img className="gameSprite" id="chestImage" src={chestImage} alt='chest'/>
     }
     return (
       <div

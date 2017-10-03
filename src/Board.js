@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
 import Hero from './Hero'
+import Item from './Item'
 import _ from 'lodash'
 import $ from 'jquery'
 window.jQuery = $
@@ -12,7 +13,11 @@ class Board extends Component {
     this.rooms = []
     this.numberOfRooms = 0
     this.board = this.createBoard(this.props.rows, this.props.columns)
-    this.initialHeroPosition = this.setInitialHeroPosition()
+    this.initialHeroPosition = this.placeHeroAndItems('hero')
+    this.items = this.props.items
+    this.items.forEach((element, index) => {
+      this.items[index].position = this.placeHeroAndItems('item')
+    })
     this.state = {
       dungeonLevel: 1
     }
@@ -21,7 +26,6 @@ class Board extends Component {
   // create the game board with the given number of rooms:
   createBoard (n, m) {
     this.numberOfRooms = this.getRandomNumb(this.props.minRooms, this.props.maxRooms)
-    // this.numberOfRooms = 10 // TEST
     // create the base board:
     let board = []
     ;for (let r = 0; r < n; r++) {
@@ -32,6 +36,7 @@ class Board extends Component {
           rowIndex: r,
           colIndex: c,
           status: 'empty',
+          occupier: 'none',
           room: 0
         })
       }
@@ -205,19 +210,22 @@ class Board extends Component {
     this.createRooms(board, placedRooms, neighborRoomStep)
   }
 
-  // find a random room tile to position the hero:
-  setInitialHeroPosition () {
+  // randomly place hero and items:
+  placeHeroAndItems (type, itemType) {
     const flattedBoard = _.flatten(this.board)
-    const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile')
+    const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile' && element.occupier === 'none')
     const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
-    return { x: randomRoomTile.rowIndex, y: randomRoomTile.colIndex }
+    const x = randomRoomTile.rowIndex
+    const y = randomRoomTile.colIndex
+    this.board[x][y].occupier = type
+    return { x: x, y: y }
   }
 
   componentDidMount () {
     // set the size of the board:
     const tileSize = 20 // pixels
-    const boardWidth = this.props.columns * (tileSize + 2)
-    const boardHeight = this.props.rows * (tileSize + 2)
+    const boardWidth = this.props.columns * (tileSize)
+    const boardHeight = this.props.rows * (tileSize)
     $('#board').css('width', boardWidth)
     $('#board').css('height', boardHeight)
   }
@@ -231,13 +239,20 @@ class Board extends Component {
           rows={this.props.rows}
           columns={this.props.columns}
         />
+        {this.items.map((element, index) => {
+          return (
+            <Item
+              key={'item-' + index}
+              itemData={element}
+            />
+          )
+        })}
         {this.board.map((currentRow) =>
           currentRow.map((currentTile) => {
             return (
               <Tile 
                 key={currentTile.id}
                 tileData={currentTile}
-                initialHeroPosition={this.initialHeroPosition}
               />
             )
           })

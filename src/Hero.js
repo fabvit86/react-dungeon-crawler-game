@@ -8,8 +8,10 @@ class Hero extends Component {
   constructor (props) {
     super(props)
     this.health = 100
+    this.attack = 10
     this.level = 1
     this.weapon = 1
+    this.resistance = 0 // increses with armor items
     this.state = {
       position: this.props.position // x and y coordinates
     }
