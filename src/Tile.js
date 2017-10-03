@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import heroImage from './assets/images/game-sprites/human_male.png'
 
 class Tile extends Component {
   constructor (props) {
@@ -15,19 +16,23 @@ class Tile extends Component {
       this.setState({occupier: 'hero'})
     }
   }
-    
+
   render () {
+    // console.log('rendering tile', this.props.tileData.id) // TEST
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
+    let img = ''
     if (this.state.occupier === 'hero') {
       classes += ' heroTile occupiedTile'
+      img = <img className="gameSprite" id="heroImage" src={heroImage} alt='hero'/>
     }
-    console.log('rendering tile', this.props.tileData.id) // TEST
     return (
       <div
         key={this.props.tileData.id}
         id={'tile'+this.props.tileData.id}
         className={classes}
-      />
+      >
+        {img}
+      </div>
     )
   }
 } // Cell class

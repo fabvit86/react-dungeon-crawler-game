@@ -215,7 +215,7 @@ class Board extends Component {
 
   componentDidMount () {
     // set the size of the board:
-    const tileSize = 10 // pixels
+    const tileSize = 20 // pixels
     const boardWidth = this.props.columns * (tileSize + 2)
     const boardHeight = this.props.rows * (tileSize + 2)
     $('#board').css('width', boardWidth)

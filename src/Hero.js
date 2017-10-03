@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import heroImage from './assets/images/game-sprites/human_male.png'
 import $ from 'jquery'
 window.jQuery = $
 window.$ = $
@@ -41,11 +42,15 @@ class Hero extends Component {
       default:
         return
       }
-      console.log('going from',this.state.position.x, this.state.position.y, 'to', nextX, nextY) // TEST
+      // console.log('going from',this.state.position.x, this.state.position.y, 'to', nextX, nextY) // TEST
+      const oldTileSelector = '#tile'+this.state.position.x+'-'+this.state.position.y
+      const newTileSelector = '#tile'+nextX+'-'+nextY
       if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns &&
-          !$('#tile'+nextX+'-'+nextY).hasClass('occupied') && $('#tile'+nextX+'-'+nextY).hasClass('roomTile')) {
-        $('#tile'+this.state.position.x+'-'+this.state.position.y).removeClass('heroTile occupied')
-        $('#tile'+nextX+'-'+nextY).addClass('heroTile occupied')
+          !$(newTileSelector).hasClass('occupied') && $(newTileSelector).hasClass('roomTile')) {
+        $(oldTileSelector).removeClass('heroTile occupied')
+        $(oldTileSelector + ' img').remove()
+        $(newTileSelector).addClass('heroTile occupied')
+        $(newTileSelector).html('<img class="gameSprite" id="heroImage" src="'+heroImage+'">')
         // update hero position:
         this.setState({position: {x: nextX, y: nextY} })
       }
@@ -54,7 +59,7 @@ class Hero extends Component {
   }
 
   render () {
-    console.log('rendering hero') // TEST
+    // console.log('rendering hero') // TEST
     return (
       <div id='hero'></div>
     )
