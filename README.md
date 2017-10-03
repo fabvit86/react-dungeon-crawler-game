@@ -23,3 +23,5 @@ This is a project is part of the FreeCodeCamp Data Visualization Certification.
 - The game should be challenging, but theoretically winnable.
 
 Built with React.js
+
+All game sprites downloaded from OpenGameArt [https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental]
