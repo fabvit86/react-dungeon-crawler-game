@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import heroImage from './assets/images/game-sprites/human_male.png'
 import treasureChestImage from './assets/images/game-sprites/chest.png'
+import potionImage from './assets/images/game-sprites/potion.png'
 
 class Tile extends Component {
   constructor (props) {
@@ -14,13 +15,23 @@ class Tile extends Component {
     // console.log('rendering tile', this.props.tileData.id) // TEST
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
     let img = ''
-    if (this.state.occupier === 'hero') {
+    switch (this.state.occupier) {
+    case 'hero':
       classes += ' heroTile'
       img = <img className="gameSprite" id="heroImage" src={heroImage} alt='hero'/>
-    } else if (this.state.occupier === 'item') {
+      break
+    case 'item':
       classes += ' itemTile'
-      img = <img className="gameSprite" id="chestImage" src={treasureChestImage} alt='chest'/>
+      img = <img className="gameSprite chestImage" src={treasureChestImage} alt='chest'/>
+      break
+    case 'potion':
+      classes += ' itemTile'
+      img = <img className="gameSprite potionImage" src={potionImage} alt='potion'/>
+      break
+    default:
+      break
     }
+    
     return (
       <div
         key={this.props.tileData.id}

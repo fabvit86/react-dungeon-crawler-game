@@ -16,7 +16,9 @@ class Board extends Component {
     this.initialHeroPosition = this.placeHeroAndItems('hero')
     this.items = this.props.items
     this.items.forEach((element, index) => {
-      this.items[index].position = this.placeHeroAndItems('item')
+      let itemClass
+      element.itemType === 'potion' ? itemClass = 'potion' : itemClass = 'item'
+      this.items[index].position = this.placeHeroAndItems(itemClass)
     })
     this.state = {
       dungeonLevel: 1

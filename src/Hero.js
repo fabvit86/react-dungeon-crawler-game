@@ -19,7 +19,7 @@ class Hero extends Component {
       health: 100,
       attack: 10, // increses with weapon item
       level: 1,
-      weapon: 'none',
+      weapon: 'bare fists',
       resistance: 0 // increses with armor items
     }
   }
@@ -31,8 +31,27 @@ class Hero extends Component {
   // check which item has been picked up:
   pickUpItem (itemX, itemY) {
     const filteredItems = this.props.items.filter((item) => item.position.x === itemX && item.position.y === itemY)
-    this.pickedUpItems.push(filteredItems[0])
-    this.dressUp()
+    const pickedItem = filteredItems[0]
+    this.pickedUpItems.push(pickedItem)
+    // increase hero parameters:
+    switch (pickedItem.itemType) {
+    case 'armor':
+      this.setState({resistance: this.state.resistance + pickedItem.resistance })
+      this.dressUp()
+      break
+    case 'weapon':
+      this.setState({
+        attack: this.state.attack + pickedItem.attack,
+        weapon: pickedItem.itemName
+      })
+      this.dressUp()
+      break
+    case 'potion':
+      this.setState({health: this.state.health + pickedItem.health })
+      break
+    default:
+      break
+    }
   }
 
   // change hero image based on the item picked up:
