@@ -1,6 +1,6 @@
 # Dungeon Crawler Game built with React.js
 
-This is a project is part of the FreeCodeCamp Data Visualization Certification. 
+This project is part of the FreeCodeCamp Data Visualization Certification. 
 
 ## Objectives:
 
