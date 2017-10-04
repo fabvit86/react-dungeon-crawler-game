@@ -17,11 +17,15 @@ class Hero extends Component {
     this.state = {
       position: this.props.position, // x and y coordinates
       health: 100,
+      maxHealth: 100,
       attack: 10, // increses with weapon item
       level: 1,
+      exp: 0,
+      nextLvlExp: 15,
       weapon: 'bare fists',
       resistance: 0 // increses with armor items
     }
+    console.log(this.state) //TEST
   }
 
   componentDidMount () {
@@ -46,12 +50,18 @@ class Hero extends Component {
       })
       this.dressUp()
       break
-    case 'potion':
-      this.setState({health: this.state.health + pickedItem.health })
+    case 'potion': {
+      let newHealth = this.state.health + pickedItem.health
+      if (newHealth > this.state.maxHealth) {
+        newHealth = this.state.maxHealth
+      }
+      this.setState({ health: newHealth })
       break
+    }
     default:
       break
     }
+    console.log(this.state) //TEST
   }
 
   // change hero image based on the item picked up:
@@ -82,19 +92,38 @@ class Hero extends Component {
     })
   }
 
+  // calculate exp needed to level up:
+  nextLvlCalculator (level) {
+    return level * 10 + 10
+  }
+
   fight (enemyX, enemyY) {
     // detect which enemy by its position:
     const filteredEnemies = this.props.enemies.filter((enemy) => enemy.position.x === enemyX && enemy.position.y === enemyY)
     const engagedEnemy = filteredEnemies[0]
-    console.log(engagedEnemy, this.state) // TEST
     // check enemy's health:
     if (engagedEnemy.health <= 0) {
       return true
     }
     // hero's attack
     engagedEnemy.health -= this.state.attack
-    console.log(engagedEnemy, this.state)
     if (engagedEnemy.health <= 0) { // enemy defeated
+      const newXP = this.state.exp + engagedEnemy.givenXP
+      // increse hero's exp:
+      this.setState({ exp: this.state.exp + engagedEnemy.givenXP })
+      // level up:
+      if (newXP >= this.state.nextLvlExp) {
+        this.setState({ 
+          level: this.state.level + 1,
+          nextLvlExp: this.nextLvlCalculator(this.state.level + 1),
+          attack: this.state.attack + 3,
+          resistance: this.state.resistance + 3,
+          health: this.state.maxHealth + 5,
+          maxHealth: this.state.maxHealth + 5,
+          exp: 0
+        })
+      }
+      console.log(this.state) //TEST
       return true
     }
     // enemy still alive, enemy's attack: 

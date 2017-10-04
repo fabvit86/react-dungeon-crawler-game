@@ -28,9 +28,9 @@ class App extends Component {
       {itemType: 'potion', itemName: 'potion', health: 8}
     ]
     this.enemies = [
-      {enemyType: 'smallEnemy', health: 5, attack: 3},
-      {enemyType: 'medEnemy', health: 15, attack: 6},
-      {enemyType: 'largeEnemy', health: 25, attack: 9}
+      {enemyType: 'smallEnemy', health: 5, attack: 4, givenXP: 10},
+      {enemyType: 'medEnemy', health: 15, attack: 8, givenXP: 15},
+      {enemyType: 'largeEnemy', health: 25, attack: 12, givenXP: 20}
     ]
   }
 
