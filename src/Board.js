@@ -20,6 +20,10 @@ class Board extends Component {
       element.itemType === 'potion' ? itemClass = 'potion' : itemClass = 'item'
       this.items[index].position = this.placeHeroAndItems(itemClass)
     })
+    this.enemies = this.props.enemies
+    this.enemies.forEach((element, index) => {
+      this.enemies[index].position = this.placeHeroAndItems(this.enemies[index].enemyType)
+    })
     this.state = {
       dungeonLevel: 1
     }
@@ -223,6 +227,10 @@ class Board extends Component {
     return { x: x, y: y }
   }
 
+  gameOver () {
+    // TODO
+  }
+
   componentDidMount () {
     // set the size of the board:
     const tileSize = 20 // pixels
@@ -241,6 +249,7 @@ class Board extends Component {
           rows={this.props.rows}
           columns={this.props.columns}
           items={this.items}
+          enemies={this.enemies}
         />
         {this.items.map((element, index) => {
           return (

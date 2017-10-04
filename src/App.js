@@ -27,6 +27,11 @@ class App extends Component {
       {itemType: 'potion', itemName: 'potion', health: 8},
       {itemType: 'potion', itemName: 'potion', health: 8}
     ]
+    this.enemies = [
+      {enemyType: 'smallEnemy', health: 5, attack: 3},
+      {enemyType: 'medEnemy', health: 15, attack: 6},
+      {enemyType: 'largeEnemy', health: 25, attack: 9}
+    ]
   }
 
   // change the gameId to render a new game:
@@ -47,6 +52,7 @@ class App extends Component {
           minRoomSide={this.minRoomSide}
           maxRoomSide={this.maxRoomSide}
           items={this.items}
+          enemies={this.enemies}
         />
       </div>
     )

@@ -13,7 +13,7 @@ class Hero extends Component {
   constructor (props) {
     super(props)
     this.pickedUpItems = []
-    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero-image" />'
+    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero" />'
     this.state = {
       position: this.props.position, // x and y coordinates
       health: 100,
@@ -56,7 +56,7 @@ class Hero extends Component {
 
   // change hero image based on the item picked up:
   dressUp () {
-    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero-image" />'
+    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero" />'
     this.pickedUpItems.forEach((element) => {
       let img
       switch (element.itemName) {
@@ -82,6 +82,32 @@ class Hero extends Component {
     })
   }
 
+  fight (enemyX, enemyY) {
+    // detect which enemy by its position:
+    const filteredEnemies = this.props.enemies.filter((enemy) => enemy.position.x === enemyX && enemy.position.y === enemyY)
+    const engagedEnemy = filteredEnemies[0]
+    console.log(engagedEnemy, this.state) // TEST
+    // check enemy's health:
+    if (engagedEnemy.health <= 0) {
+      return true
+    }
+    // hero's attack
+    engagedEnemy.health -= this.state.attack
+    console.log(engagedEnemy, this.state)
+    if (engagedEnemy.health <= 0) { // enemy defeated
+      return true
+    }
+    // enemy still alive, enemy's attack: 
+    else {
+      this.setState({ health: this.state.health - engagedEnemy.attack })
+      // check hero's health:
+      if (this.state.health <= 0) {
+        // TODO: game over
+      }
+      return false
+    }
+  }
+
   moveHero () {
     window.addEventListener('keydown', (event) => {
       if (event.defaultPrevented) {
@@ -105,24 +131,36 @@ class Hero extends Component {
       default:
         return
       }
-      // console.log('going from',this.state.position.x, this.state.position.y, 'to', nextX, nextY) // TEST
       const oldTileSelector = '#tile'+this.state.position.x+'-'+this.state.position.y
       const newTileSelector = '#tile'+nextX+'-'+nextY
-      if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns &&
-          $(newTileSelector).hasClass('roomTile')) {
-        $(oldTileSelector).removeClass('heroTile')
-        $(oldTileSelector + ' img').remove()
-        $(newTileSelector).addClass('heroTile')
-        // update hero image:
-        $(newTileSelector).html(this.heroImage)
+      let moveOn = false
+      if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns
+          && $(newTileSelector).hasClass('roomTile')) {
         // hit an item chest:
         if ($(newTileSelector).hasClass('itemTile')) {
           this.pickUpItem(nextX, nextY)
           $(newTileSelector).html(this.heroImage)
           $(newTileSelector).removeClass('itemTile')
+          moveOn = true
         }
-        // update hero position:
-        this.setState({position: {x: nextX, y: nextY} })
+        // hit an enemy:
+        else if ($(newTileSelector).hasClass('enemyTile')) {
+          moveOn = this.fight(nextX, nextY)
+        // goes to a free tile:
+        } else {
+          moveOn = true
+        }
+        if (moveOn) {
+          // remove hero from current tile:
+          $(oldTileSelector).removeClass('heroTile')
+          $(oldTileSelector + ' img').remove()
+          // move hero to next tile:
+          $(newTileSelector).addClass('heroTile')
+          // update hero image:
+          $(newTileSelector).html(this.heroImage)
+          // update hero position:
+          this.setState({position: {x: nextX, y: nextY} })
+        }
       }
       event.preventDefault()
     }, true)

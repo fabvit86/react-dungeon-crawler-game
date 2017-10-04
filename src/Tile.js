@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import heroImage from './assets/images/game-sprites/human_male.png'
 import treasureChestImage from './assets/images/game-sprites/chest.png'
 import potionImage from './assets/images/game-sprites/potion.png'
+import smallEnemyImage from './assets/images/game-sprites/enemy_small.png'
+import medEnemyImage from './assets/images/game-sprites/enemy_med.png'
+import largeEnemyImage from './assets/images/game-sprites/enemy_large.png'
 
 class Tile extends Component {
   constructor (props) {
@@ -28,10 +31,22 @@ class Tile extends Component {
       classes += ' itemTile'
       img = <img className="gameSprite potionImage" src={potionImage} alt='potion'/>
       break
+    case 'smallEnemy':
+      classes += ' enemyTile'
+      img = <img className="gameSprite enemyImage" src={smallEnemyImage} alt='smallEnemy'/>
+      break
+    case 'medEnemy':
+      classes += ' enemyTile'
+      img = <img className="gameSprite enemyImage" src={medEnemyImage} alt='medEnemy'/>
+      break
+    case 'largeEnemy':
+      classes += ' enemyTile'
+      img = <img className="gameSprite enemyImage" src={largeEnemyImage} alt='largeEnemy'/>
+      break
     default:
       break
     }
-    
+
     return (
       <div
         key={this.props.tileData.id}
