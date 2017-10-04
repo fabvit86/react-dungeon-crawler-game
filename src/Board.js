@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Tile from './Tile'
 import Hero from './Hero'
 import Item from './Item'
+// import StatusBar from './StatusBar'
 import _ from 'lodash'
 import $ from 'jquery'
 window.jQuery = $
@@ -14,12 +15,14 @@ class Board extends Component {
     this.numberOfRooms = 0
     this.board = this.createBoard(this.props.rows, this.props.columns)
     this.initialHeroPosition = this.placeHeroAndItems('hero')
+    // items position:
     this.items = this.props.items
     this.items.forEach((element, index) => {
       let itemClass
       element.itemType === 'potion' ? itemClass = 'potion' : itemClass = 'item'
       this.items[index].position = this.placeHeroAndItems(itemClass)
     })
+    // enemies position:
     this.enemies = this.props.enemies
     this.enemies.forEach((element, index) => {
       this.enemies[index].position = this.placeHeroAndItems(this.enemies[index].enemyType)
@@ -108,7 +111,7 @@ class Board extends Component {
       }
     }
     // create corridor between rooms:
-    board[xCorridor][yCorridor].status = 'roomTile'
+    board[xCorridor][yCorridor].status = 'roomTile corridor'
     // add the room:
     this.rooms.push({
       roomId: roomIndex,
@@ -242,34 +245,36 @@ class Board extends Component {
 
   render () {
     return (
-      <div id='board'>
-        <Hero 
-          board={this.board}
-          position={this.initialHeroPosition}
-          rows={this.props.rows}
-          columns={this.props.columns}
-          items={this.items}
-          enemies={this.enemies}
-        />
-        {this.items.map((element, index) => {
-          return (
-            <Item
-              key={'item-' + index}
-              itemData={element}
-            />
-          )
-        })}
-        {this.board.map((currentRow) =>
-          currentRow.map((currentTile) => {
+      <div>
+        <div id='board'>
+          <Hero 
+            board={this.board}
+            position={this.initialHeroPosition}
+            rows={this.props.rows}
+            columns={this.props.columns}
+            items={this.items}
+            enemies={this.enemies}
+          />
+          {this.items.map((element, index) => {
             return (
-              <Tile 
-                key={currentTile.id}
-                tileData={currentTile}
+              <Item
+                key={'item-' + index}
+                itemData={element}
               />
             )
-          })
-        )}
-      </div> 
+          })}
+          {this.board.map((currentRow) =>
+            currentRow.map((currentTile) => {
+              return (
+                <Tile 
+                  key={currentTile.id}
+                  tileData={currentTile}
+                />
+              )
+            })
+          )}
+        </div>
+      </div>
     )
   }
 } // Board class

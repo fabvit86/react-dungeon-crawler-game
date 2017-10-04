@@ -38,3 +38,11 @@
   z-index: 99;
 }
 
+#statusBar {
+  text-align: center;
+}
+
+#statsTable {
+  display: initial;
+  -webkit-border-horizontal-spacing: 20px;
+}

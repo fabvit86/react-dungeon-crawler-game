@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import StatusBar from './StatusBar'
 import heroImage from './assets/images/game-sprites/human_male.png'
 import chestArmorImage from './assets/images/game-sprites/scalemail_2.png'
 import legsImage from './assets/images/game-sprites/leg_armor_1.png'
@@ -29,6 +30,11 @@ class Hero extends Component {
   }
 
   componentDidMount () {
+    // $('span.level').text(this.state.level)
+    // $('span.health').text(this.state.health)
+    // $('span.attack').text(this.state.attack)
+    // $('span.weapon').text(this.state.weapon)
+    // $('span.resistance').text(this.state.resistance)
     this.moveHero()
   }
 
@@ -203,9 +209,11 @@ class Hero extends Component {
   }
 
   render () {
-    // console.log('rendering hero') // TEST
+    console.log('rendering hero') // TEST
     return (
-      <div id='hero'></div>
+      <div id='hero'>
+        <StatusBar stats={this.state}/>
+      </div>
     )
   }
 } // Hero class
