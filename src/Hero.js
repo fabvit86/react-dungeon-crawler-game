@@ -97,6 +97,13 @@ class Hero extends Component {
     return level * 10 + 10
   }
 
+  // calculate damage dealt randomly within a range:
+  damageDealtCalculator (baseAttack) {
+    const minAttack = baseAttack - 2
+    const maxAttack = baseAttack + 2
+    return Math.floor(Math.random() * (maxAttack - minAttack) + minAttack)
+  }
+
   fight (enemyX, enemyY) {
     // detect which enemy by its position:
     const filteredEnemies = this.props.enemies.filter((enemy) => enemy.position.x === enemyX && enemy.position.y === enemyY)
@@ -106,7 +113,7 @@ class Hero extends Component {
       return true
     }
     // hero's attack
-    engagedEnemy.health -= this.state.attack
+    engagedEnemy.health -= this.damageDealtCalculator(this.state.attack)
     if (engagedEnemy.health <= 0) { // enemy defeated
       const newXP = this.state.exp + engagedEnemy.givenXP
       // increse hero's exp:
@@ -128,7 +135,7 @@ class Hero extends Component {
     }
     // enemy still alive, enemy's attack: 
     else {
-      this.setState({ health: this.state.health - engagedEnemy.attack })
+      this.setState({ health: this.state.health - this.damageDealtCalculator(engagedEnemy.attack) })
       // check hero's health:
       if (this.state.health <= 0) {
         // TODO: game over
