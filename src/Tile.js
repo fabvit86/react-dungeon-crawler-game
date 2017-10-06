@@ -5,6 +5,7 @@ import potionImage from './assets/images/game-sprites/potion.png'
 import smallEnemyImage from './assets/images/game-sprites/enemy_small.png'
 import medEnemyImage from './assets/images/game-sprites/enemy_med.png'
 import largeEnemyImage from './assets/images/game-sprites/enemy_large.png'
+import doorImage from './assets/images/game-sprites/runed_door.png'
 
 class Tile extends Component {
   constructor (props) {
@@ -15,9 +16,8 @@ class Tile extends Component {
   }
 
   render () {
-    // console.log('rendering tile', this.props.tileData.id) // TEST
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
-    let img = ''
+    let img
     switch (this.state.occupier) {
     case 'hero':
       classes += ' heroTile'
@@ -42,6 +42,10 @@ class Tile extends Component {
     case 'largeEnemy':
       classes += ' enemyTile'
       img = <img className="gameSprite enemyImage" src={largeEnemyImage} alt='largeEnemy'/>
+      break
+    case 'exitDoor':
+      classes += ' exitDoor'
+      img = <img className="gameSprite doorImage" src={doorImage} alt='doorImage'/>
       break
     default:
       break

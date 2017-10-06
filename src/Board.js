@@ -10,18 +10,19 @@ class Board extends Component {
     this.rooms = []
     this.numberOfRooms = 0
     this.board = this.createBoard(this.props.rows, this.props.columns)
-    this.initialHeroPosition = this.placeHeroAndItems('hero')
+    this.initialHeroPosition = this.placeHeroAndItems('hero', 'roomTile') // place the hero
+    this.placeHeroAndItems('exitDoor', 'roomTile roomBorder') // place the exit door
     // items position:
     this.items = this.props.items
     this.items.forEach((element, index) => {
       let itemClass
       element.itemType === 'potion' ? itemClass = 'potion' : itemClass = 'item'
-      this.items[index].position = this.placeHeroAndItems(itemClass)
+      this.items[index].position = this.placeHeroAndItems(itemClass, 'roomTile')
     })
     // enemies position:
     this.enemies = this.props.enemies
     this.enemies.forEach((element, index) => {
-      this.enemies[index].position = this.placeHeroAndItems(this.enemies[index].enemyType)
+      this.enemies[index].position = this.placeHeroAndItems(this.enemies[index].enemyType, 'roomTile')
     })
     this.state = {
       dungeonLevel: 1
@@ -70,7 +71,11 @@ class Board extends Component {
     // place the first room:
     ;for (let i = x; i < x + verticalSide; i++) {
       for (let j = y; j < y + horizontalSide; j++) {
-        board[i][j].status = 'roomTile' // indicates that this tile belongs to a room
+        if (i === x || j === y || i === x + verticalSide - 1 || j === y + horizontalSide - 1) {
+          board[i][j].status = 'roomTile roomBorder' // indicates that this tile belongs to a room border
+        } else {
+          board[i][j].status = 'roomTile'
+        }
         board[i][j].room = 1 // indicates that this tile belongs to the first room
       }
     }
@@ -101,7 +106,11 @@ class Board extends Component {
           })
           return false
         }
-        board[i][j].status = 'roomTile' // indicates that this tile belongs to a room
+        if (i === x || j === y || i === x + verticalSide - 1 || j === y + horizontalSide - 1) {
+          board[i][j].status = 'roomTile roomBorder' // indicates that this tile belongs to a room border
+        } else {
+          board[i][j].status = 'roomTile'
+        }
         board[i][j].room = roomIndex // indicates that this tile belongs to this room
         assignedTiles.push({rowIndex: i, columnIndex: j})
       }
@@ -215,15 +224,30 @@ class Board extends Component {
     this.createRooms(board, placedRooms, neighborRoomStep)
   }
 
-  // randomly place hero and items:
-  placeHeroAndItems (type) {
+  // place exit door:
+  placeDoor (type) {
     const flattedBoard = _.flatten(this.board)
-    const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile' && element.occupier === 'none')
+    const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile roomBorder' && element.occupier === 'none')
     const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
     const x = randomRoomTile.rowIndex
     const y = randomRoomTile.colIndex
     this.board[x][y].occupier = type
-    return { x: x, y: y }
+    this.board[x][y].position = { x: x, y: y }
+  }
+
+  // randomly place hero and items:
+  placeHeroAndItems (type, tileType) {
+    const flattedBoard = _.flatten(this.board)
+    const roomTiles = flattedBoard.filter((element) => element.status === tileType && element.occupier === 'none')
+    const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
+    const x = randomRoomTile.rowIndex
+    const y = randomRoomTile.colIndex
+    this.board[x][y].occupier = type
+    if (tileType === 'roomTile roomBorder') {
+      this.board[x][y].position = { x: x, y: y }
+    } else {
+      return { x: x, y: y }
+    }
   }
 
   gameOver () {
