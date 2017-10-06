@@ -24,8 +24,8 @@
   background-image: url('assets/images/game-sprites/sand_1.png')
 }
 
-.tile.heroTile {
-  /*background-color: green;*/
+img#heroImage {
+  background-color: green;
 }
 
 .gameSprite {

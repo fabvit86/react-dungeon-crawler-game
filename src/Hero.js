@@ -95,6 +95,20 @@ class Hero extends Component {
     })
   }
 
+  // shows a tooltip about the item picked up:
+  showItemTooltip (nextX, nextY, newTileSelector) {
+    const itemPosition = $(newTileSelector).offset()
+    $('#tooltipDiv .tooltip-inner').html('You found ' + this.getPicketUpItem(nextX, nextY).itemName + '!')
+    const tooltipDivHeight = $('#tooltipDiv').outerHeight()
+    const tooltipDivWidth = $('#tooltipDiv').outerWidth()
+    const tooltipTop = itemPosition.top - tooltipDivHeight
+    const tooltipLeft = itemPosition.left + $(newTileSelector).outerWidth() / 2 - tooltipDivWidth / 2
+    $('#tooltipDiv').css('transform', 'translate3d('+tooltipLeft+'px, '+tooltipTop+'px, 0px)')
+    $('#tooltipDiv .arrow').css('left', tooltipDivWidth / 2 + 'px')
+    $('#tooltipDiv').addClass('show')
+    setTimeout(() => $('#tooltipDiv').removeClass('show'), 600)
+  }
+
   // calculate exp needed to level up:
   nextLvlCalculator (level) {
     return level * (10 + level) + 10
@@ -139,6 +153,8 @@ class Hero extends Component {
     // enemy still alive, enemy's attack: 
     else {
       this.setState({ health: this.state.health - this.damageDealtCalculator(engagedEnemy.attack) })
+      $('#heroImage').css('background-color', 'red')
+      setTimeout(() => $('#heroImage').css('background-color', 'green'), 50)
       // check hero's health:
       if (this.state.health <= 0) {
         // TODO: game over
@@ -181,14 +197,7 @@ class Hero extends Component {
           $(newTileSelector).html(this.heroImage)
           $(newTileSelector).removeClass('itemTile')
           // tooltip:
-          const itemPosition = $(newTileSelector).offset()
-          $('#tooltipDiv .tooltip-inner').html('You found ' + this.getPicketUpItem(nextX, nextY).itemName + '!')
-          const tooltipTop = itemPosition.top - $('#tooltipDiv').outerHeight()
-          const tooltipLeft = itemPosition.left + $(newTileSelector).outerWidth() / 2 - $('#tooltipDiv').outerWidth() / 2
-          $('#tooltipDiv').css('transform', 'translate3d('+tooltipLeft+'px, '+tooltipTop+'px, 0px)')
-          $('#tooltipDiv .arrow').css('left', $('#tooltipDiv').outerWidth() / 2 + 'px')
-          $('#tooltipDiv').addClass('show')
-          setTimeout(() => $('#tooltipDiv').removeClass('show'), 600)
+          this.showItemTooltip(nextX, nextY, newTileSelector)
           moveOn = true
         }
         // hit an enemy:
