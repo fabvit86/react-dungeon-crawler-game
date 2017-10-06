@@ -224,17 +224,6 @@ class Board extends Component {
     this.createRooms(board, placedRooms, neighborRoomStep)
   }
 
-  // place exit door:
-  placeDoor (type) {
-    const flattedBoard = _.flatten(this.board)
-    const roomTiles = flattedBoard.filter((element) => element.status === 'roomTile roomBorder' && element.occupier === 'none')
-    const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
-    const x = randomRoomTile.rowIndex
-    const y = randomRoomTile.colIndex
-    this.board[x][y].occupier = type
-    this.board[x][y].position = { x: x, y: y }
-  }
-
   // randomly place hero and items:
   placeHeroAndItems (type, tileType) {
     const flattedBoard = _.flatten(this.board)
@@ -242,12 +231,18 @@ class Board extends Component {
     const randomRoomTile = roomTiles[Math.floor(Math.random()*roomTiles.length)]
     const x = randomRoomTile.rowIndex
     const y = randomRoomTile.colIndex
-    this.board[x][y].occupier = type
-    if (tileType === 'roomTile roomBorder') {
+    if (type === 'exitDoor') {
+      // do not place the door near a cooridor:
+      if (this.board[x+1][y].status === 'roomTile corridor' || 
+          this.board[x-1][y].status === 'roomTile corridor' ||
+          this.board[x][y+1].status === 'roomTile corridor' ||
+          this.board[x][y-1].status === 'roomTile corridor') {
+        return this.placeHeroAndItems(type, tileType)
+      }
       this.board[x][y].position = { x: x, y: y }
-    } else {
-      return { x: x, y: y }
     }
+    this.board[x][y].occupier = type
+    return { x: x, y: y }
   }
 
   gameOver () {
