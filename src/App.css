@@ -46,3 +46,10 @@
   display: initial;
   -webkit-border-horizontal-spacing: 20px;
 }
+
+#tooltipDiv {
+  position: absolute;
+  top: 0px; 
+  left: 0px; 
+  will-change: transform;
+}

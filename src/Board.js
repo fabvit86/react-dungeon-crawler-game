@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
 import Hero from './Hero'
-import Item from './Item'
-// import StatusBar from './StatusBar'
 import _ from 'lodash'
 import $ from 'jquery'
-window.jQuery = $
-window.$ = $
 
 class Board extends Component {
   constructor (props) {
@@ -244,6 +240,7 @@ class Board extends Component {
   }
 
   render () {
+    console.log('rendering board...')
     return (
       <div>
         <div id='board'>
@@ -255,24 +252,26 @@ class Board extends Component {
             items={this.items}
             enemies={this.enemies}
           />
-          {this.items.map((element, index) => {
-            return (
-              <Item
-                key={'item-' + index}
-                itemData={element}
-              />
-            )
-          })}
           {this.board.map((currentRow) =>
             currentRow.map((currentTile) => {
+              // check if this tile contains an item and pass it to the Tile component:
+              let item
+              if (currentTile.occupier === 'item') {
+                item = this.items.filter((el) => el.position.x === currentTile.rowIndex && el.position.y === currentTile.colIndex)[0]
+              }
               return (
                 <Tile 
                   key={currentTile.id}
                   tileData={currentTile}
-                />
+                  item={item}
+                ></Tile>
               )
             })
           )}
+        </div>
+        <div id='tooltipDiv' className="tooltip bs-tooltip-top" data-placement="top">
+          <div className='tooltip-inner'></div>
+          <span className='arrow'></span>
         </div>
       </div>
     )

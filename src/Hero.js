@@ -7,8 +7,6 @@ import glovesImage from './assets/images/game-sprites/glove_gray.png'
 import helmImage from './assets/images/game-sprites/helm_plume.png'
 import swordImage from './assets/images/game-sprites/sword_3.png'
 import $ from 'jquery'
-window.jQuery = $
-window.$ = $
 
 class Hero extends Component {
   constructor (props) {
@@ -30,18 +28,17 @@ class Hero extends Component {
   }
 
   componentDidMount () {
-    // $('span.level').text(this.state.level)
-    // $('span.health').text(this.state.health)
-    // $('span.attack').text(this.state.attack)
-    // $('span.weapon').text(this.state.weapon)
-    // $('span.resistance').text(this.state.resistance)
     this.moveHero()
+  }
+
+  getPicketUpItem (itemX, itemY) {
+    const filteredItems = this.props.items.filter((item) => item.position.x === itemX && item.position.y === itemY)
+    return filteredItems[0]
   }
 
   // check which item has been picked up:
   pickUpItem (itemX, itemY) {
-    const filteredItems = this.props.items.filter((item) => item.position.x === itemX && item.position.y === itemY)
-    const pickedItem = filteredItems[0]
+    const pickedItem = this.getPicketUpItem(itemX, itemY)
     this.pickedUpItems.push(pickedItem)
     // increase hero parameters:
     switch (pickedItem.itemType) {
@@ -100,7 +97,7 @@ class Hero extends Component {
 
   // calculate exp needed to level up:
   nextLvlCalculator (level) {
-    return level * 10 + 10
+    return level * (10 + level) + 10
   }
 
   // calculate damage dealt randomly within a range:
@@ -183,6 +180,15 @@ class Hero extends Component {
           this.pickUpItem(nextX, nextY)
           $(newTileSelector).html(this.heroImage)
           $(newTileSelector).removeClass('itemTile')
+          // tooltip:
+          const itemPosition = $(newTileSelector).offset()
+          $('#tooltipDiv .tooltip-inner').html('You found ' + this.getPicketUpItem(nextX, nextY).itemName + '!')
+          const tooltipTop = itemPosition.top - $('#tooltipDiv').outerHeight()
+          const tooltipLeft = itemPosition.left + $(newTileSelector).outerWidth() / 2 - $('#tooltipDiv').outerWidth() / 2
+          $('#tooltipDiv').css('transform', 'translate3d('+tooltipLeft+'px, '+tooltipTop+'px, 0px)')
+          $('#tooltipDiv .arrow').css('left', $('#tooltipDiv').outerWidth() / 2 + 'px')
+          $('#tooltipDiv').addClass('show')
+          setTimeout(() => $('#tooltipDiv').removeClass('show'), 600)
           moveOn = true
         }
         // hit an enemy:
