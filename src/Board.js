@@ -261,7 +261,7 @@ class Board extends Component {
   render () {
     console.log('rendering board...') //TEST
     return (
-      <div>
+      <div id='boardContainer'>
         <div id='board'>
           {this.board.map((currentRow) =>
             currentRow.map((currentTile) => {

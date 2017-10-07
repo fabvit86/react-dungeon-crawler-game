@@ -36,7 +36,19 @@ class Hero extends Component {
     $('#tile'+nextProps.position.x+'-'+nextProps.position.y).html(this.heroImage)
   }
 
+  // center the div around the tile containing the hero:
+  centerViewToHero () {
+    const minContainerWidth = Math.min($(window).width(), $('#board').width())
+    const heroTileTopPos = $('.tile.heroTile').position().top
+    const heroTileLeftPos = $('.tile.heroTile').position().left
+    const halfContainerHeight = $('#boardContainer').height() / 2
+    const halfContainerWidth = minContainerWidth / 2
+    $('#boardContainer').scrollTop(heroTileTopPos - halfContainerHeight)
+    $('#boardContainer').scrollLeft(heroTileLeftPos - halfContainerWidth)
+  }
+
   componentDidMount () {
+    this.centerViewToHero()
     // add event listener:
     window.addEventListener('keydown', this.bound_moveHero, true)
   }
@@ -233,6 +245,8 @@ class Hero extends Component {
         $(newTileSelector).addClass('heroTile')
         // update hero image:
         $(newTileSelector).html(this.heroImage)
+        // center thie view:
+        this.centerViewToHero()
         // update hero position:
         this.setState({position: {x: nextX, y: nextY} })
       }
