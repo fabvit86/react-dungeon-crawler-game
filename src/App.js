@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import './App.css'
 import Board from './Board'
+import Hero from './Hero'
 
 class App extends Component {
   constructor () {
     super()
     this.state = {
-      gameId: 1
+      gameId: 1,
+      initialHeroPosition: {x: 0, y: 0}
     }
     // default board values:
     this.rows = 30
@@ -20,26 +22,30 @@ class App extends Component {
       {itemType: 'armor', itemName: 'leg armor', resistance: 3},
       {itemType: 'armor', itemName: 'helm', resistance: 2}, 
       {itemType: 'armor', itemName: 'gloves', resistance: 1},
-      // {itemType: 'weapon', itemName: 'knife', attack: 5},
-      // {itemType: 'weapon', itemName: 'mace', attack: 8},
       {itemType: 'weapon', itemName: 'sword', attack: 10},
       {itemType: 'potion', itemName: 'potion', health: 8},
       {itemType: 'potion', itemName: 'potion', health: 8},
       {itemType: 'potion', itemName: 'potion', health: 8}
     ]
     this.enemies = [
-      {enemyType: 'smallEnemy', health: 15, attack: 4, givenXP: 10},
-      {enemyType: 'medEnemy', health: 25, attack: 8, givenXP: 15},
-      {enemyType: 'largeEnemy', health: 40, attack: 12, givenXP: 20}
+      {enemyType: 'smallEnemy', health: 15, attack: 20, givenXP: 10, level: 1},
+      {enemyType: 'medEnemy', health: 25, attack: 35, givenXP: 15, level: 1},
+      {enemyType: 'largeEnemy', health: 40, attack: 50, givenXP: 20, level: 1}
     ]
+    this.finalDungeon = false
   }
 
-  // change the gameId to render a new game:
+  notifyParent (heroPosition) {
+    this.setState({ initialHeroPosition: heroPosition })
+  }
+
   newGame () {
+    this.finalDungeon = true
     this.setState({ gameId: this.state.gameId + 1 })
   }
 
   render() {
+    console.log('rendering app...','heroPosition:',this.state.initialHeroPosition)
     return (
       <div className="App">
         <h1>React Dungeon Crawler Game</h1>
@@ -53,6 +59,17 @@ class App extends Component {
           maxRoomSide={this.maxRoomSide}
           items={this.items}
           enemies={this.enemies}
+          newGame={this.newGame.bind(this)}
+          finalDungeon={this.finalDungeon}
+          notifyParent={this.notifyParent.bind(this)}
+        />
+        <Hero 
+          position={this.state.initialHeroPosition}
+          rows={this.rows}
+          columns={this.columns}
+          items={this.items}
+          enemies={this.enemies}
+          nextDungeon={this.newGame.bind(this)}
         />
       </div>
     )

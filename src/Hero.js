@@ -24,11 +24,25 @@ class Hero extends Component {
       weapon: 'bare fists',
       resistance: 0 // increses with armor items
     }
-    console.log(this.state) //TEST
+    this.bound_moveHero = this.moveHero.bind(this) // needed to clean event listener
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('hero nextProps:',nextProps) //TEST
+    // update initial hero position:
+    if (this.state.position.x !== nextProps.position.x || this.state.position.y !== nextProps.position.y) {
+      this.setState({ position: nextProps.position })
+    }
   }
 
   componentDidMount () {
-    this.moveHero()
+    // add event listener:
+    window.addEventListener('keydown', this.bound_moveHero, true)
+  }
+
+  componentWillUnmount () {
+    // clean event listener:
+    window.removeEventListener('keydown', this.bound_moveHero, true)
   }
 
   getPicketUpItem (itemX, itemY) {
@@ -141,7 +155,7 @@ class Hero extends Component {
           level: this.state.level + 1,
           nextLvlExp: this.nextLvlCalculator(this.state.level + 1),
           attack: this.state.attack + 3,
-          resistance: this.state.resistance + 3,
+          resistance: this.state.resistance + 2,
           health: this.state.maxHealth + 5,
           maxHealth: this.state.maxHealth + 5,
           exp: 0
@@ -152,7 +166,7 @@ class Hero extends Component {
     }
     // enemy still alive, enemy's attack: 
     else {
-      this.setState({ health: this.state.health - this.damageDealtCalculator(engagedEnemy.attack) })
+      this.setState({ health: this.state.health - (this.damageDealtCalculator(engagedEnemy.attack) - this.state.resistance) })
       $('#heroImage').css('background-color', 'red')
       setTimeout(() => $('#heroImage').css('background-color', 'green'), 50)
       // check hero's health:
@@ -163,68 +177,71 @@ class Hero extends Component {
     }
   }
 
-  moveHero () {
-    window.addEventListener('keydown', (event) => {
-      if (event.defaultPrevented) {
-        return
+  moveHero (event) {
+    if (event.defaultPrevented) {
+      return
+    }
+    let nextX = this.state.position.x
+    let nextY = this.state.position.y
+    switch (event.key) {
+    case 'ArrowDown':
+      nextX = this.state.position.x + 1
+      break
+    case 'ArrowUp':
+      nextX = this.state.position.x - 1
+      break
+    case 'ArrowLeft':
+      nextY = this.state.position.y - 1
+      break
+    case 'ArrowRight':
+      nextY = this.state.position.y + 1
+      break
+    default:
+      return
+    }
+    const oldTileSelector = '#tile'+this.state.position.x+'-'+this.state.position.y
+    const newTileSelector = '#tile'+nextX+'-'+nextY
+    let moveOn = false
+    if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns
+        && $(newTileSelector).hasClass('roomTile')) {
+      // hit the exit door:
+      if ($(newTileSelector).hasClass('exitDoor')) {
+        this.props.nextDungeon()
       }
-      let nextX = this.state.position.x
-      let nextY = this.state.position.y
-      switch (event.key) {
-      case 'ArrowDown':
-        nextX = this.state.position.x + 1
-        break
-      case 'ArrowUp':
-        nextX = this.state.position.x - 1
-        break
-      case 'ArrowLeft':
-        nextY = this.state.position.y - 1
-        break
-      case 'ArrowRight':
-        nextY = this.state.position.y + 1
-        break
-      default:
-        return
+      // hit an item chest:
+      else if ($(newTileSelector).hasClass('itemTile')) {
+        this.pickUpItem(nextX, nextY)
+        $(newTileSelector).html(this.heroImage)
+        $(newTileSelector).removeClass('itemTile')
+        // tooltip:
+        this.showItemTooltip(nextX, nextY, newTileSelector)
+        moveOn = true
       }
-      const oldTileSelector = '#tile'+this.state.position.x+'-'+this.state.position.y
-      const newTileSelector = '#tile'+nextX+'-'+nextY
-      let moveOn = false
-      if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns
-          && $(newTileSelector).hasClass('roomTile')) {
-        // hit an item chest:
-        if ($(newTileSelector).hasClass('itemTile')) {
-          this.pickUpItem(nextX, nextY)
-          $(newTileSelector).html(this.heroImage)
-          $(newTileSelector).removeClass('itemTile')
-          // tooltip:
-          this.showItemTooltip(nextX, nextY, newTileSelector)
-          moveOn = true
-        }
-        // hit an enemy:
-        else if ($(newTileSelector).hasClass('enemyTile')) {
-          moveOn = this.fight(nextX, nextY)
-        // goes to a free tile:
-        } else {
-          moveOn = true
-        }
-        if (moveOn) {
-          // remove hero from current tile:
-          $(oldTileSelector).removeClass('heroTile')
-          $(oldTileSelector + ' img').remove()
-          // move hero to next tile:
-          $(newTileSelector).addClass('heroTile')
-          // update hero image:
-          $(newTileSelector).html(this.heroImage)
-          // update hero position:
-          this.setState({position: {x: nextX, y: nextY} })
-        }
+      // hit an enemy:
+      else if ($(newTileSelector).hasClass('enemyTile')) {
+        moveOn = this.fight(nextX, nextY)
       }
-      event.preventDefault()
-    }, true)
+      // goes to a free tile:
+      else {
+        moveOn = true
+      }
+      if (moveOn) {
+        // remove hero from current tile:
+        $(oldTileSelector).removeClass('heroTile')
+        $(oldTileSelector + ' img').remove()
+        // move hero to next tile:
+        $(newTileSelector).addClass('heroTile')
+        // update hero image:
+        $(newTileSelector).html(this.heroImage)
+        // update hero position:
+        this.setState({position: {x: nextX, y: nextY} })
+      }
+    }
+    event.preventDefault()
   }
 
   render () {
-    console.log('rendering hero') // TEST
+    console.log('rendering hero...','hero:',this.state, 'items:', this.pickedUpItems) // TEST
     return (
       <div id='hero'>
         <StatusBar stats={this.state}/>

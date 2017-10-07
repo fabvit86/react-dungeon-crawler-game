@@ -1,16 +1,18 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
-import Hero from './Hero'
+// import Hero from './Hero'
 import _ from 'lodash'
 import $ from 'jquery'
 
 class Board extends Component {
   constructor (props) {
     super(props)
+    console.log('calling board constructor...', 'final dungeon=', this.props.finalDungeon)
     this.rooms = []
     this.numberOfRooms = 0
-    this.board = this.createBoard(this.props.rows, this.props.columns)
+    this.board = this.createBoard(this.props.rows, this.props.columns, false)
     this.initialHeroPosition = this.placeHeroAndItems('hero', 'roomTile') // place the hero
+    this.props.notifyParent(this.initialHeroPosition) // send the hero position to the parent
     this.placeHeroAndItems('exitDoor', 'roomTile roomBorder') // place the exit door
     // items position:
     this.items = this.props.items
@@ -30,7 +32,7 @@ class Board extends Component {
   }
 
   // create the game board with the given number of rooms:
-  createBoard (n, m) {
+  createBoard (n, m, finalRoom) {
     this.numberOfRooms = this.getRandomNumb(this.props.minRooms, this.props.maxRooms)
     // create the base board:
     let board = []
@@ -48,7 +50,7 @@ class Board extends Component {
       }
       board.push(row)
     }
-    this.createRoom(board)
+    this.createRoom(board, finalRoom)
     return board
   }
 
@@ -57,7 +59,7 @@ class Board extends Component {
     return Math.floor(Math.random() * (max - min) + min)
   }
 
-  createRoom (board) {
+  createRoom (board, finalRoom) {
     // generate random room sides:
     const minRoomSide = this.props.minRoomSide
     const maxRoomSide = this.props.maxRoomSide
@@ -89,7 +91,7 @@ class Board extends Component {
       horizontalSize: horizontalSide,
       verticalSize: verticalSide
     })
-    this.createRooms(board, 1, 1)
+    if (!finalRoom) this.createRooms(board, 1, 1)
   }
 
   // assign the tiles to a room if possible:
@@ -245,6 +247,10 @@ class Board extends Component {
     return { x: x, y: y }
   }
 
+  goToNextDungeon () {
+    this.props.newGame()
+  }
+
   gameOver () {
     // TODO
   }
@@ -259,18 +265,19 @@ class Board extends Component {
   }
 
   render () {
-    console.log('rendering board...')
+    console.log('rendering board...') //TEST
     return (
       <div>
         <div id='board'>
-          <Hero 
-            board={this.board}
-            position={this.initialHeroPosition}
-            rows={this.props.rows}
-            columns={this.props.columns}
-            items={this.items}
-            enemies={this.enemies}
-          />
+          {// <Hero 
+          //   position={this.initialHeroPosition}
+          //   rows={this.props.rows}
+          //   columns={this.props.columns}
+          //   items={this.items}
+          //   enemies={this.enemies}
+          //   nextDungeon={this.goToNextDungeon.bind(this)}
+          // />
+          }
           {this.board.map((currentRow) =>
             currentRow.map((currentTile) => {
               // check if this tile contains an item and pass it to the Tile component:
@@ -283,7 +290,7 @@ class Board extends Component {
                   key={currentTile.id}
                   tileData={currentTile}
                   item={item}
-                ></Tile>
+                />
               )
             })
           )}
