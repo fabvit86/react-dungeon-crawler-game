@@ -28,11 +28,12 @@ class Hero extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('hero nextProps:',nextProps) //TEST
     // update initial hero position:
     if (this.state.position.x !== nextProps.position.x || this.state.position.y !== nextProps.position.y) {
       this.setState({ position: nextProps.position })
     }
+    // update hero image:
+    $('#tile'+nextProps.position.x+'-'+nextProps.position.y).html(this.heroImage)
   }
 
   componentDidMount () {
@@ -241,7 +242,7 @@ class Hero extends Component {
   }
 
   render () {
-    console.log('rendering hero...','hero:',this.state, 'items:', this.pickedUpItems) // TEST
+    console.log('rendering hero...','hero:',this.state) // TEST
     return (
       <div id='hero'>
         <StatusBar stats={this.state}/>
