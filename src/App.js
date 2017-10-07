@@ -11,28 +11,37 @@ class App extends Component {
       initialHeroPosition: {x: 0, y: 0}
     }
     // default board values:
-    this.rows = 30
-    this.columns = 30
+    this.rows = 70
+    this.columns = 60
     this.minRooms = 15
     this.maxRooms = 20
     this.minRoomSide = 8
     this.maxRoomSide = 15
+    this.repeatUniqueEnemies = 5
+    this.numberOfPotions = 8
     this.items = [
       {itemType: 'armor', itemName: 'chest armor', resistance: 5}, 
       {itemType: 'armor', itemName: 'leg armor', resistance: 3},
       {itemType: 'armor', itemName: 'helm', resistance: 2}, 
       {itemType: 'armor', itemName: 'gloves', resistance: 1},
-      {itemType: 'weapon', itemName: 'sword', attack: 10},
-      {itemType: 'potion', itemName: 'potion', health: 8},
-      {itemType: 'potion', itemName: 'potion', health: 8},
-      {itemType: 'potion', itemName: 'potion', health: 8}
+      {itemType: 'weapon', itemName: 'sword', attack: 10}
     ]
-    this.enemies = [
-      {enemyType: 'smallEnemy', health: 15, attack: 20, givenXP: 10, level: 1},
-      {enemyType: 'medEnemy', health: 25, attack: 35, givenXP: 15, level: 1},
-      {enemyType: 'largeEnemy', health: 40, attack: 50, givenXP: 20, level: 1}
-    ]
-    this.finalBoss = [{enemyType: 'bossEnemy', health: 200, attack: 80, givenXP: 50, level: 1}]
+    let potionsIndex = 0
+    while (potionsIndex < this.numberOfPotions) {
+      this.items.push(
+        {itemType: 'potion', itemName: 'potion', health: 10})
+      potionsIndex++
+    }
+    this.enemies = []
+    let enemiesIndex = 0
+    while (enemiesIndex < this.repeatUniqueEnemies) {
+      this.enemies.push(
+        {enemyType: 'smallEnemy', health: 15, attack: 20, givenXP: 10, level: 1},
+        {enemyType: 'medEnemy', health: 25, attack: 35, givenXP: 15, level: 1},
+        {enemyType: 'largeEnemy', health: 40, attack: 50, givenXP: 20, level: 1})
+      enemiesIndex++
+    }
+    this.finalBoss = [{enemyType: 'bossEnemy', health: 150, attack: 70, givenXP: 50, level: 1}]
     this.finalDungeon = false
   }
 
