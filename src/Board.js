@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
-// import Hero from './Hero'
 import _ from 'lodash'
 import $ from 'jquery'
 
@@ -9,18 +8,21 @@ class Board extends Component {
     super(props)
     console.log('calling board constructor...', 'final dungeon=', this.props.finalDungeon)
     this.rooms = []
+    this.enemies = []
     this.numberOfRooms = 0
-    this.board = this.createBoard(this.props.rows, this.props.columns, false)
+    this.board = this.createBoard(this.props.rows, this.props.columns, this.props.finalDungeon)
     this.initialHeroPosition = this.placeHeroAndItems('hero', 'roomTile') // place the hero
     this.props.notifyParent(this.initialHeroPosition) // send the hero position to the parent
-    this.placeHeroAndItems('exitDoor', 'roomTile roomBorder') // place the exit door
-    // items position:
-    this.items = this.props.items
-    this.items.forEach((element, index) => {
-      let itemClass
-      element.itemType === 'potion' ? itemClass = 'potion' : itemClass = 'item'
-      this.items[index].position = this.placeHeroAndItems(itemClass, 'roomTile')
-    })
+    if (!this.props.finalDungeon) {
+      this.placeHeroAndItems('exitDoor', 'roomTile roomBorder') // place the exit door
+      // items position:
+      this.items = this.props.items
+      this.items.forEach((element, index) => {
+        let itemClass
+        element.itemType === 'potion' ? itemClass = 'potion' : itemClass = 'item'
+        this.items[index].position = this.placeHeroAndItems(itemClass, 'roomTile')
+      })
+    } 
     // enemies position:
     this.enemies = this.props.enemies
     this.enemies.forEach((element, index) => {
@@ -235,24 +237,16 @@ class Board extends Component {
     const y = randomRoomTile.colIndex
     if (type === 'exitDoor') {
       // do not place the door near a cooridor:
-      if (this.board[x+1][y].status === 'roomTile corridor' || 
-          this.board[x-1][y].status === 'roomTile corridor' ||
-          this.board[x][y+1].status === 'roomTile corridor' ||
-          this.board[x][y-1].status === 'roomTile corridor') {
+      if ((x+1 < this.rows && this.board[x+1][y].status === 'roomTile corridor') || 
+          (x-1 >= 0 && this.board[x-1][y].status === 'roomTile corridor') ||
+          (y+1 < this.columns && this.board[x][y+1].status === 'roomTile corridor') ||
+          (y-1 >= 0 && this.board[x][y-1].status === 'roomTile corridor')) {
         return this.placeHeroAndItems(type, tileType)
       }
       this.board[x][y].position = { x: x, y: y }
     }
     this.board[x][y].occupier = type
     return { x: x, y: y }
-  }
-
-  goToNextDungeon () {
-    this.props.newGame()
-  }
-
-  gameOver () {
-    // TODO
   }
 
   componentDidMount () {
@@ -269,15 +263,6 @@ class Board extends Component {
     return (
       <div>
         <div id='board'>
-          {// <Hero 
-          //   position={this.initialHeroPosition}
-          //   rows={this.props.rows}
-          //   columns={this.props.columns}
-          //   items={this.items}
-          //   enemies={this.enemies}
-          //   nextDungeon={this.goToNextDungeon.bind(this)}
-          // />
-          }
           {this.board.map((currentRow) =>
             currentRow.map((currentTile) => {
               // check if this tile contains an item and pass it to the Tile component:

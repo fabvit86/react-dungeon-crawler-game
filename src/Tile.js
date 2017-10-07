@@ -5,6 +5,7 @@ import potionImage from './assets/images/game-sprites/potion.png'
 import smallEnemyImage from './assets/images/game-sprites/enemy_small.png'
 import medEnemyImage from './assets/images/game-sprites/enemy_med.png'
 import largeEnemyImage from './assets/images/game-sprites/enemy_large.png'
+import bossEnemyImage from './assets/images/game-sprites/boss.png'
 import doorImage from './assets/images/game-sprites/runed_door.png'
 
 class Tile extends Component {
@@ -43,9 +44,13 @@ class Tile extends Component {
       classes += ' enemyTile'
       img = <img className="gameSprite enemyImage" src={largeEnemyImage} alt='largeEnemy'/>
       break
+    case 'bossEnemy':
+      classes += ' enemyTile'
+      img = <img className="gameSprite enemyImage" src={bossEnemyImage} alt='bossEnemy'/>
+      break
     case 'exitDoor':
       classes += ' exitDoor'
-      img = <img className="gameSprite doorImage" src={doorImage} alt='doorImage'/>
+      img = <img className="gameSprite doorImage" src={doorImage} alt='door'/>
       break
     default:
       break

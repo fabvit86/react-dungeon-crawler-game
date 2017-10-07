@@ -162,7 +162,6 @@ class Hero extends Component {
           exp: 0
         })
       }
-      console.log(this.state) //TEST
       return true
     }
     // enemy still alive, enemy's attack: 
@@ -207,12 +206,11 @@ class Hero extends Component {
         && $(newTileSelector).hasClass('roomTile')) {
       // hit the exit door:
       if ($(newTileSelector).hasClass('exitDoor')) {
-        this.props.nextDungeon()
+        this.props.goToFinalDungeon()
       }
       // hit an item chest:
       else if ($(newTileSelector).hasClass('itemTile')) {
         this.pickUpItem(nextX, nextY)
-        $(newTileSelector).html(this.heroImage)
         $(newTileSelector).removeClass('itemTile')
         // tooltip:
         this.showItemTooltip(nextX, nextY, newTileSelector)
@@ -221,6 +219,7 @@ class Hero extends Component {
       // hit an enemy:
       else if ($(newTileSelector).hasClass('enemyTile')) {
         moveOn = this.fight(nextX, nextY)
+        if(moveOn) $(newTileSelector).removeClass('enemyTile')
       }
       // goes to a free tile:
       else {
@@ -242,7 +241,7 @@ class Hero extends Component {
   }
 
   render () {
-    console.log('rendering hero...','hero:',this.state) // TEST
+    console.log('rendering hero...','hero:',this.state, 'enemies:',this.props.enemies) // TEST
     return (
       <div id='hero'>
         <StatusBar stats={this.state}/>

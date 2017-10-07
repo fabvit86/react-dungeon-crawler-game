@@ -32,6 +32,7 @@ class App extends Component {
       {enemyType: 'medEnemy', health: 25, attack: 35, givenXP: 15, level: 1},
       {enemyType: 'largeEnemy', health: 40, attack: 50, givenXP: 20, level: 1}
     ]
+    this.finalBoss = [{enemyType: 'bossEnemy', health: 200, attack: 80, givenXP: 50, level: 1}]
     this.finalDungeon = false
   }
 
@@ -39,8 +40,9 @@ class App extends Component {
     this.setState({ initialHeroPosition: heroPosition })
   }
 
-  newGame () {
+  createFinalDungeon () {
     this.finalDungeon = true
+    this.enemies = this.finalBoss
     this.setState({ gameId: this.state.gameId + 1 })
   }
 
@@ -59,7 +61,7 @@ class App extends Component {
           maxRoomSide={this.maxRoomSide}
           items={this.items}
           enemies={this.enemies}
-          newGame={this.newGame.bind(this)}
+          createFinalDungeon={this.createFinalDungeon.bind(this)}
           finalDungeon={this.finalDungeon}
           notifyParent={this.notifyParent.bind(this)}
         />
@@ -69,7 +71,7 @@ class App extends Component {
           columns={this.columns}
           items={this.items}
           enemies={this.enemies}
-          nextDungeon={this.newGame.bind(this)}
+          goToFinalDungeon={this.createFinalDungeon.bind(this)}
         />
       </div>
     )
