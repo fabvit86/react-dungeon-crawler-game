@@ -12,8 +12,19 @@ class Tile extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      occupier: this.props.tileData.occupier
+      occupier: this.props.tileData.occupier,
+      darkness: this.props.darkness
     }
+  }
+
+  // check if this tile is within the hero's line of sight:
+  isNearHero () {
+    const xOffset = Math.abs(this.props.heroPosition.x - this.props.tileData.rowIndex)
+    const yOffset = Math.abs(this.props.heroPosition.y - this.props.tileData.colIndex)
+    if(xOffset < this.props.lineOfSight && yOffset < this.props.lineOfSight) {
+      return true
+    }
+    return false
   }
 
   render () {
@@ -54,6 +65,9 @@ class Tile extends Component {
       break
     default:
       break
+    }
+    if (this.state.darkness && this.state.occupier !== 'hero' && !this.isNearHero()) {
+      classes += ' darkness'
     }
 
     return (

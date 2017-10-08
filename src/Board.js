@@ -275,6 +275,9 @@ class Board extends Component {
                   key={currentTile.id}
                   tileData={currentTile}
                   item={item}
+                  heroPosition={this.initialHeroPosition}
+                  lineOfSight={this.props.lineOfSight}
+                  darkness={this.props.darkness}
                 />
               )
             })

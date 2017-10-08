@@ -17,6 +17,15 @@
   float: left;
   width: 20px;
   height: 20px;
+  background: none;
+}
+
+.tile.darkness {
+  background: black !important;
+}
+
+.tile.darkness img {
+  visibility: hidden;
 }
 
 .tile.empty {

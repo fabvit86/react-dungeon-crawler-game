@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import Board from './Board'
 import Hero from './Hero'
+import DarknessButton from './DarknessButton'
 
 class App extends Component {
   constructor () {
@@ -11,14 +12,16 @@ class App extends Component {
       initialHeroPosition: {x: 0, y: 0}
     }
     // default board values:
-    this.rows = 70
-    this.columns = 60
+    this.rows = 20//60
+    this.columns = 20//70
     this.minRooms = 15
     this.maxRooms = 20
     this.minRoomSide = 8
     this.maxRoomSide = 15
     this.repeatUniqueEnemies = 5
     this.numberOfPotions = 8
+    this.lineOfSight = 5
+    this.darkness = true
     this.items = [
       {itemType: 'armor', itemName: 'chest armor', resistance: 5}, 
       {itemType: 'armor', itemName: 'leg armor', resistance: 3},
@@ -55,6 +58,10 @@ class App extends Component {
     this.setState({ gameId: this.state.gameId + 1 })
   }
 
+  toggleDarkness (darkness) {
+    return !darkness
+  }
+
   render() {
     console.log('rendering app...','heroPosition:',this.state.initialHeroPosition)
     return (
@@ -73,6 +80,8 @@ class App extends Component {
           createFinalDungeon={this.createFinalDungeon.bind(this)}
           finalDungeon={this.finalDungeon}
           notifyParent={this.notifyParent.bind(this)}
+          lineOfSight={this.lineOfSight}
+          darkness={this.darkness}
         />
         <Hero 
           position={this.state.initialHeroPosition}
@@ -81,7 +90,11 @@ class App extends Component {
           items={this.items}
           enemies={this.enemies}
           goToFinalDungeon={this.createFinalDungeon.bind(this)}
+          lineOfSight={this.lineOfSight}
+          darkness={this.darkness}
         />
+        <DarknessButton toggleDarkness={this.toggleDarkness.bind(this)} />
+        <div id='darknessDiv'></div>
       </div>
     )
   }
