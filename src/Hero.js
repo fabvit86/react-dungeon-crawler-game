@@ -1,18 +1,12 @@
 import React, { Component } from 'react'
 import StatusBar from './StatusBar'
-import heroImage from './assets/images/game-sprites/human_male.png'
-import chestArmorImage from './assets/images/game-sprites/scalemail_2.png'
-import legsImage from './assets/images/game-sprites/leg_armor_1.png'
-import glovesImage from './assets/images/game-sprites/glove_gray.png'
-import helmImage from './assets/images/game-sprites/helm_plume.png'
-import swordImage from './assets/images/game-sprites/sword_3.png'
+import DarknessButton from './DarknessButton'
 import $ from 'jquery'
 
 class Hero extends Component {
   constructor (props) {
     super(props)
     this.pickedUpItems = []
-    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero" />'
     this.state = {
       position: this.props.position, // x and y coordinates
       health: 100,
@@ -32,8 +26,6 @@ class Hero extends Component {
     if (this.state.position.x !== nextProps.position.x || this.state.position.y !== nextProps.position.y) {
       this.setState({ position: nextProps.position })
     }
-    // update hero image:
-    $('#tile'+nextProps.position.x+'-'+nextProps.position.y).html(this.heroImage)
   }
 
   // center the div around the tile containing the hero:
@@ -71,14 +63,12 @@ class Hero extends Component {
     switch (pickedItem.itemType) {
     case 'armor':
       this.setState({resistance: this.state.resistance + pickedItem.resistance })
-      this.dressUp()
       break
     case 'weapon':
       this.setState({
         attack: this.state.attack + pickedItem.attack,
         weapon: pickedItem.itemName
       })
-      this.dressUp()
       break
     case 'potion': {
       let newHealth = this.state.health + pickedItem.health
@@ -92,34 +82,6 @@ class Hero extends Component {
       break
     }
     console.log(this.state) //TEST
-  }
-
-  // change hero image based on the item picked up:
-  dressUp () {
-    this.heroImage = '<img class="gameSprite" id="heroImage" src="'+heroImage+'" alt="hero" />'
-    this.pickedUpItems.forEach((element) => {
-      let img
-      switch (element.itemName) {
-      case 'chest armor':
-        img = chestArmorImage
-        break
-      case 'leg armor':
-        img = legsImage
-        break
-      case 'helm':
-        img = helmImage
-        break
-      case 'gloves':
-        img = glovesImage
-        break
-      case 'sword':
-        img = swordImage
-        break
-      default:
-        return
-      }
-      this.heroImage += '<img class="gameSprite" src="' + img +'" alt="'+ element.itemName +'Image"/>'
-    })
   }
 
   // shows a tooltip about the item picked up:
@@ -283,7 +245,6 @@ class Hero extends Component {
     default:
       return
     }
-    const oldTileSelector = '#tile'+this.state.position.x+'-'+this.state.position.y
     const newTileSelector = '#tile'+nextX+'-'+nextY
     let moveOn = false
     if (nextX >= 0 && nextY >= 0 && nextX < this.props.rows && nextY < this.props.columns
@@ -295,7 +256,6 @@ class Hero extends Component {
       // hit an item chest:
       else if ($(newTileSelector).hasClass('itemTile')) {
         this.pickUpItem(nextX, nextY)
-        $(newTileSelector).removeClass('itemTile')
         // tooltip:
         this.showItemTooltip(nextX, nextY, newTileSelector)
         moveOn = true
@@ -303,24 +263,21 @@ class Hero extends Component {
       // hit an enemy:
       else if ($(newTileSelector).hasClass('enemyTile')) {
         moveOn = this.fight(nextX, nextY)
-        if(moveOn) $(newTileSelector).removeClass('enemyTile')
+        if(moveOn){ 
+          $(newTileSelector).removeClass('enemyTile')
+        }
       }
       // goes to a free tile:
       else {
         moveOn = true
       }
       if (moveOn) {
-        // remove hero from current tile:
-        $(oldTileSelector).removeClass('heroTile')
-        $(oldTileSelector + ' img').remove()
-        // move hero to next tile:
-        $(newTileSelector).addClass('heroTile')
         // update darkness:
         if (this.props.darkness) this.updateDarkness(event.key, nextX, nextY)
-        // update hero image:
-        $(newTileSelector).html(this.heroImage)
         // center thie view:
         this.centerViewToHero()
+        // send new hero info to the parent:
+        this.props.updateHeroToParent({x: nextX, y: nextY}, this.state.position, this.pickedUpItems)
         // update hero position:
         this.setState({position: {x: nextX, y: nextY} })
       }
@@ -328,11 +285,20 @@ class Hero extends Component {
     event.preventDefault()
   }
 
+  // toggleDarkness () {
+  //   console.log('toggle darkness clicked')
+  //   if (!this.darkness) {
+  //     $('.tile').removeClass('darkness')
+  //   }
+  //   // this.setState({ darkness: !this.state.darkness })
+  // }
+
   render () {
-    console.log('rendering hero...','hero:',this.state, 'enemies:',this.props.enemies) // TEST
+    // console.log('rendering hero...','hero:',this.state, 'enemies:',this.props.enemies) // TEST
     return (
       <div id='hero'>
         <StatusBar stats={this.state}/>
+        <DarknessButton toggleDarkness={this.props.toggleDarkness} />
       </div>
     )
   }

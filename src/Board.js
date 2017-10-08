@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
+import Hero from './Hero'
+// import DarknessButton from './DarknessButton'
 import _ from 'lodash'
 import $ from 'jquery'
 
@@ -29,7 +31,10 @@ class Board extends Component {
       this.enemies[index].position = this.placeHeroAndItems(this.enemies[index].enemyType, 'roomTile')
     })
     this.state = {
-      dungeonLevel: 1
+      dungeonLevel: 1,
+      darkness: this.props.darkness,
+      heroPosition: this.initialHeroPosition,
+      heroItems: []
     }
   }
 
@@ -249,6 +254,20 @@ class Board extends Component {
     return { x: x, y: y }
   }
 
+  updateHero (newHeroPosition, oldPosition, pickedUpItems) {
+    this.board[oldPosition.x][oldPosition.y].occupier = 'none'
+    this.board[newHeroPosition.x][newHeroPosition.y].occupier = 'hero'
+    this.setState({ 
+      heroPosition: newHeroPosition,
+      heroItems: pickedUpItems
+    })
+  }
+
+  // toggleDarkness () {
+  //   console.log('toggle darkness clicked')
+  //   this.setState({ darkness: !this.state.darkness })
+  // }
+
   componentDidMount () {
     // set the size of the board:
     const tileSize = 20 // pixels
@@ -265,6 +284,7 @@ class Board extends Component {
         <div id='board'>
           {this.board.map((currentRow) =>
             currentRow.map((currentTile) => {
+              if (currentTile.occupier === 'hero') console.log('hero occupier',currentTile)
               // check if this tile contains an item and pass it to the Tile component:
               let item
               if (currentTile.occupier === 'item') {
@@ -275,14 +295,27 @@ class Board extends Component {
                   key={currentTile.id}
                   tileData={currentTile}
                   item={item}
-                  heroPosition={this.initialHeroPosition}
+                  heroPosition={this.state.heroPosition}
+                  heroItems={this.state.heroItems}
                   lineOfSight={this.props.lineOfSight}
-                  darkness={this.props.darkness}
+                  darkness={this.state.darkness}
                 />
               )
             })
           )}
         </div>
+        <Hero 
+          position={this.initialHeroPosition}
+          rows={this.props.rows}
+          columns={this.props.columns}
+          items={this.items}
+          enemies={this.enemies}
+          goToFinalDungeon={this.props.createFinalDungeon}
+          lineOfSight={this.props.lineOfSight}
+          darkness={this.props.darkness}
+          updateHeroToParent={this.updateHero.bind(this)}
+          // toggleDarkness={this.toggleDarkness.bind(this)}
+        />
         <div id='tooltipDiv' className="tooltip bs-tooltip-top" data-placement="top">
           <div className='tooltip-inner'></div>
           <span className='arrow'></span>

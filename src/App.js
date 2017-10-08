@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import Board from './Board'
 import Hero from './Hero'
-import DarknessButton from './DarknessButton'
+import $ from 'jquery'
 
 class App extends Component {
   constructor () {
@@ -58,10 +58,6 @@ class App extends Component {
     this.setState({ gameId: this.state.gameId + 1 })
   }
 
-  toggleDarkness (darkness) {
-    return !darkness
-  }
-
   render() {
     console.log('rendering app...','heroPosition:',this.state.initialHeroPosition)
     return (
@@ -83,18 +79,18 @@ class App extends Component {
           lineOfSight={this.lineOfSight}
           darkness={this.darkness}
         />
-        <Hero 
-          position={this.state.initialHeroPosition}
-          rows={this.rows}
-          columns={this.columns}
-          items={this.items}
-          enemies={this.enemies}
-          goToFinalDungeon={this.createFinalDungeon.bind(this)}
-          lineOfSight={this.lineOfSight}
-          darkness={this.darkness}
-        />
-        <DarknessButton toggleDarkness={this.toggleDarkness.bind(this)} />
-        <div id='darknessDiv'></div>
+        { //<Hero
+        //   position={this.state.initialHeroPosition}
+        //   rows={this.rows}
+        //   columns={this.columns}
+        //   items={this.items}
+        //   enemies={this.enemies}
+        //   goToFinalDungeon={this.createFinalDungeon.bind(this)}
+        //   lineOfSight={this.lineOfSight}
+        //   darkness={this.darkness}
+        //   toggleDarkness={this.toggleDarkness.bind(this)}
+        // />
+        }
       </div>
     )
   }
