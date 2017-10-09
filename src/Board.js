@@ -33,6 +33,7 @@ class Board extends Component {
     this.state = {
       dungeonLevel: 1,
       darkness: this.props.darkness,
+      oldHeroPosition: this.initialHeroPosition,
       heroPosition: this.initialHeroPosition,
       heroItems: []
     }
@@ -258,6 +259,7 @@ class Board extends Component {
     this.board[oldPosition.x][oldPosition.y].occupier = 'none'
     this.board[newHeroPosition.x][newHeroPosition.y].occupier = 'hero'
     this.setState({ 
+      oldHeroPosition: oldPosition,
       heroPosition: newHeroPosition,
       heroItems: pickedUpItems
     })
@@ -280,29 +282,35 @@ class Board extends Component {
   render () {
     console.log('rendering board...') //TEST
     return (
-      <div id='boardContainer'>
-        <div id='board'>
-          {this.board.map((currentRow) =>
-            currentRow.map((currentTile) => {
-              if (currentTile.occupier === 'hero') console.log('hero occupier',currentTile)
-              // check if this tile contains an item and pass it to the Tile component:
-              let item
-              if (currentTile.occupier === 'item') {
-                item = this.items.filter((el) => el.position.x === currentTile.rowIndex && el.position.y === currentTile.colIndex)[0]
-              }
-              return (
-                <Tile 
-                  key={currentTile.id}
-                  tileData={currentTile}
-                  item={item}
-                  heroPosition={this.state.heroPosition}
-                  heroItems={this.state.heroItems}
-                  lineOfSight={this.props.lineOfSight}
-                  darkness={this.state.darkness}
-                />
-              )
-            })
-          )}
+      <div>
+        <div id='boardContainer'>
+          <div id='board'>
+            {this.board.map((currentRow) =>
+              currentRow.map((currentTile) => {
+                // check if this tile contains an item and pass it to the Tile component:
+                // let item
+                // if (currentTile.occupier === 'item') {
+                //   item = this.items.filter((el) => el.position.x === currentTile.rowIndex && el.position.y === currentTile.colIndex)[0]
+                // }
+                return (
+                  <Tile 
+                    key={currentTile.id}
+                    tileData={currentTile}
+                    // item={item}
+                    oldPosition={this.state.oldHeroPosition}
+                    heroPosition={this.state.heroPosition}
+                    heroItems={this.state.heroItems}
+                    lineOfSight={this.props.lineOfSight}
+                    darkness={this.state.darkness}
+                  />
+                )
+              })
+            )}
+          </div>
+          <div id='tooltipDiv' className="tooltip bs-tooltip-top" data-placement="top">
+            <div className='tooltip-inner'></div>
+            <span className='arrow'></span>
+          </div>
         </div>
         <Hero 
           position={this.initialHeroPosition}
@@ -316,10 +324,6 @@ class Board extends Component {
           updateHeroToParent={this.updateHero.bind(this)}
           // toggleDarkness={this.toggleDarkness.bind(this)}
         />
-        <div id='tooltipDiv' className="tooltip bs-tooltip-top" data-placement="top">
-          <div className='tooltip-inner'></div>
-          <span className='arrow'></span>
-        </div>
       </div>
     )
   }

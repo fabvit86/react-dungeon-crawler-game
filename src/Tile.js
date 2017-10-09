@@ -14,11 +14,26 @@ import helmImage from './assets/images/game-sprites/helm_plume.png'
 import swordImage from './assets/images/game-sprites/sword_3.png'
 
 class Tile extends Component {
-  constructor (props) {
-    super(props)
-    // this.state = {
-    //   occupier: this.props.tileData.occupier
-    // }
+  // constructor (props) {
+  //   super(props)
+  // }
+
+  // componentWillReceiveProps (nextProps) {
+  //   if (this.props.tileData.occupier === 'hero') {
+  //     console.log('tileData:',this.props.tileData,'nextProps',nextProps.tileData)
+  //   }
+  // }
+
+  shouldComponentUpdate (nextProps) {
+    // render only tile that had the hero and tile that now has the hero:
+    if ((nextProps.heroPosition.x === nextProps.tileData.rowIndex 
+        && nextProps.heroPosition.y === nextProps.tileData.colIndex)
+        ||
+        (nextProps.oldPosition.x === nextProps.tileData.rowIndex
+        && nextProps.oldPosition.y === nextProps.tileData.colIndex)){
+      return true
+    }
+    return false
   }
 
   // check if this tile is within the hero's line of sight:
@@ -40,7 +55,6 @@ class Tile extends Component {
       img.push(<img key='heroImage' className="gameSprite" id="heroImage" src={heroImage} alt="hero"/>)
       ;for (let i = 0; i < this.props.heroItems.length;i++) {
         const currentItem = this.props.heroItems[i]
-        let currentImg
         switch (currentItem.itemName) {
         case 'chest armor':
           img.push(<img key={i} className="gameSprite" src={chestArmorImage} alt={this.props.heroItems[i].itemName}/>)
@@ -61,7 +75,7 @@ class Tile extends Component {
           break
         }
       }
-      console.log('rendering hero tile:',this.props.tileData.id,'classes:',classes, 'heroPos:',this.props.heroPosition, 'heroItems:',this.props.heroItems) //TEST
+      // console.log('rendering hero tile:',this.props.tileData.id,'classes:',classes, 'heroPos:',this.props.heroPosition, 'heroItems:',this.props.heroItems) //TEST
       break
     case 'item':
       classes += ' itemTile'
