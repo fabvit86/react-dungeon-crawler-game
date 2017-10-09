@@ -21,13 +21,6 @@ class Hero extends Component {
     this.bound_moveHero = this.moveHero.bind(this) // needed to clean event listener
   }
 
-  componentWillReceiveProps(nextProps) {
-    // update initial hero position:
-    if (this.state.position.x !== nextProps.position.x || this.state.position.y !== nextProps.position.y) {
-      this.setState({ position: nextProps.position })
-    }
-  }
-
   // center the div around the tile containing the hero:
   centerViewToHero () {
     const minContainerWidth = Math.min($(window).width(), $('#board').width())
@@ -152,76 +145,76 @@ class Hero extends Component {
   }
 
   // udpate the line of sight of the hero:
-  updateDarkness (keyPressed, nextX, nextY) {
-    const toogleDarknessClass = (stillVal, changeIndex, indexMaxVal, action, type) => {
-      for(let i = changeIndex - this.props.lineOfSight + 1; i < changeIndex + this.props.lineOfSight; i++) {
-        if (i >= 0 && i <= indexMaxVal){
-          let identifier
-          type === 'row' 
-            ? identifier = ('#tile'+stillVal+'-'+i) 
-            : identifier = ('#tile'+i+'-'+stillVal)
-          action === 'remove' 
-            ? $(identifier).removeClass('darkness') 
-            : $(identifier).addClass('darkness')
-        }
-      }
-    }
-    if (this.props.darkness) {
-      let xToLight, xToDark, yToLight, yToDark, minToCompare, maxToCompare, minAction, maxAction
-      switch (keyPressed) {
-      case 'ArrowDown':
-      case 'ArrowUp':
-        if (keyPressed === 'ArrowDown') {
-          xToLight = nextX + this.props.lineOfSight - 1
-          xToDark = nextX - this.props.lineOfSight
-          minToCompare = xToDark
-          maxToCompare = xToLight
-          minAction = 'add'
-          maxAction = 'remove'
-        } else {
-          xToLight = nextX - this.props.lineOfSight + 1
-          xToDark = nextX + this.props.lineOfSight
-          minToCompare = xToLight
-          maxToCompare = xToDark
-          minAction = 'remove'
-          maxAction = 'add'
-        }
-        if (maxToCompare < this.props.rows) {
-          toogleDarknessClass(maxToCompare, nextY, this.props.columns, maxAction, 'row')
-        }
-        if (minToCompare >= 0) {
-          toogleDarknessClass(minToCompare, nextY, this.props.columns, minAction, 'row')
-        }
-        break
-      case 'ArrowLeft':
-      case 'ArrowRight':
-        if (keyPressed === 'ArrowLeft') {
-          yToLight = nextY - this.props.lineOfSight + 1
-          yToDark = nextY + this.props.lineOfSight
-          minToCompare = yToLight
-          maxToCompare = yToDark
-          minAction = 'remove'
-          maxAction = 'add'
-        } else {
-          yToLight = nextY + this.props.lineOfSight - 1
-          yToDark = nextY - this.props.lineOfSight
-          minToCompare = yToDark
-          maxToCompare = yToLight
-          minAction = 'add'
-          maxAction = 'remove'
-        }
-        if (minToCompare >= 0) {
-          toogleDarknessClass(minToCompare, nextX, this.props.rows, minAction, 'column')
-        }
-        if (maxToCompare < this.props.columns) {
-          toogleDarknessClass(maxToCompare, nextX, this.props.rows, maxAction, 'column')
-        }
-        break
-      default:
-        return
-      }
-    }
-  }
+  // updateDarkness (keyPressed, nextX, nextY) {
+  //   const toogleDarknessClass = (stillVal, changeIndex, indexMaxVal, action, type) => {
+  //     for(let i = changeIndex - this.props.lineOfSight + 1; i < changeIndex + this.props.lineOfSight; i++) {
+  //       if (i >= 0 && i <= indexMaxVal){
+  //         let identifier
+  //         type === 'row' 
+  //           ? identifier = ('#tile'+stillVal+'-'+i) 
+  //           : identifier = ('#tile'+i+'-'+stillVal)
+  //         action === 'remove' 
+  //           ? $(identifier).removeClass('darkness') 
+  //           : $(identifier).addClass('darkness')
+  //       }
+  //     }
+  //   }
+  //   if (this.props.darkness) {
+  //     let xToLight, xToDark, yToLight, yToDark, minToCompare, maxToCompare, minAction, maxAction
+  //     switch (keyPressed) {
+  //     case 'ArrowDown':
+  //     case 'ArrowUp':
+  //       if (keyPressed === 'ArrowDown') {
+  //         xToLight = nextX + this.props.lineOfSight - 1
+  //         xToDark = nextX - this.props.lineOfSight
+  //         minToCompare = xToDark
+  //         maxToCompare = xToLight
+  //         minAction = 'add'
+  //         maxAction = 'remove'
+  //       } else {
+  //         xToLight = nextX - this.props.lineOfSight + 1
+  //         xToDark = nextX + this.props.lineOfSight
+  //         minToCompare = xToLight
+  //         maxToCompare = xToDark
+  //         minAction = 'remove'
+  //         maxAction = 'add'
+  //       }
+  //       if (maxToCompare < this.props.rows) {
+  //         toogleDarknessClass(maxToCompare, nextY, this.props.columns, maxAction, 'row')
+  //       }
+  //       if (minToCompare >= 0) {
+  //         toogleDarknessClass(minToCompare, nextY, this.props.columns, minAction, 'row')
+  //       }
+  //       break
+  //     case 'ArrowLeft':
+  //     case 'ArrowRight':
+  //       if (keyPressed === 'ArrowLeft') {
+  //         yToLight = nextY - this.props.lineOfSight + 1
+  //         yToDark = nextY + this.props.lineOfSight
+  //         minToCompare = yToLight
+  //         maxToCompare = yToDark
+  //         minAction = 'remove'
+  //         maxAction = 'add'
+  //       } else {
+  //         yToLight = nextY + this.props.lineOfSight - 1
+  //         yToDark = nextY - this.props.lineOfSight
+  //         minToCompare = yToDark
+  //         maxToCompare = yToLight
+  //         minAction = 'add'
+  //         maxAction = 'remove'
+  //       }
+  //       if (minToCompare >= 0) {
+  //         toogleDarknessClass(minToCompare, nextX, this.props.rows, minAction, 'column')
+  //       }
+  //       if (maxToCompare < this.props.columns) {
+  //         toogleDarknessClass(maxToCompare, nextX, this.props.rows, maxAction, 'column')
+  //       }
+  //       break
+  //     default:
+  //       return
+  //     }
+  //   }
+  // }
 
   moveHero (event) {
     if (event.defaultPrevented) {
@@ -272,9 +265,7 @@ class Hero extends Component {
         moveOn = true
       }
       if (moveOn) {
-        // update darkness:
-        if (this.props.darkness) this.updateDarkness(event.key, nextX, nextY)
-        // center thie view:
+        // center the view:
         this.centerViewToHero()
         // send new hero info to the parent:
         this.props.updateHeroToParent({x: nextX, y: nextY}, this.state.position, this.pickedUpItems)
@@ -285,20 +276,16 @@ class Hero extends Component {
     event.preventDefault()
   }
 
-  // toggleDarkness () {
-  //   console.log('toggle darkness clicked')
-  //   if (!this.darkness) {
-  //     $('.tile').removeClass('darkness')
-  //   }
-  //   // this.setState({ darkness: !this.state.darkness })
-  // }
-
   render () {
+    // console.log('in hero position:', this.state.position)
     // console.log('rendering hero...','hero:',this.state, 'enemies:',this.props.enemies) // TEST
     return (
       <div id='hero'>
         <StatusBar stats={this.state}/>
-        <DarknessButton toggleDarkness={this.props.toggleDarkness} />
+        <DarknessButton 
+          // heroPosition={this.state.position}
+          toggleDarkness={this.props.toggleDarkness} 
+        />
       </div>
     )
   }

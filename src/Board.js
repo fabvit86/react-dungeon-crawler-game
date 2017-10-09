@@ -265,10 +265,13 @@ class Board extends Component {
     })
   }
 
-  // toggleDarkness () {
-  //   console.log('toggle darkness clicked')
-  //   this.setState({ darkness: !this.state.darkness })
-  // }
+  toggleDarkness () {
+    // console.log('darkness:',!this.state.darkness, 'HeroPosition:',this.state.heroPosition)
+    this.setState({ 
+      darkness: !this.state.darkness
+      // 
+    })
+  }
 
   componentDidMount () {
     // set the size of the board:
@@ -287,17 +290,11 @@ class Board extends Component {
           <div id='board'>
             {this.board.map((currentRow) =>
               currentRow.map((currentTile) => {
-                // check if this tile contains an item and pass it to the Tile component:
-                // let item
-                // if (currentTile.occupier === 'item') {
-                //   item = this.items.filter((el) => el.position.x === currentTile.rowIndex && el.position.y === currentTile.colIndex)[0]
-                // }
                 return (
                   <Tile 
                     key={currentTile.id}
                     tileData={currentTile}
-                    // item={item}
-                    oldPosition={this.state.oldHeroPosition}
+                    oldHeroPosition={this.state.oldHeroPosition}
                     heroPosition={this.state.heroPosition}
                     heroItems={this.state.heroItems}
                     lineOfSight={this.props.lineOfSight}
@@ -320,9 +317,9 @@ class Board extends Component {
           enemies={this.enemies}
           goToFinalDungeon={this.props.createFinalDungeon}
           lineOfSight={this.props.lineOfSight}
-          darkness={this.props.darkness}
+          darkness={this.state.darkness}
           updateHeroToParent={this.updateHero.bind(this)}
-          // toggleDarkness={this.toggleDarkness.bind(this)}
+          toggleDarkness={this.toggleDarkness.bind(this)}
         />
       </div>
     )

@@ -14,39 +14,45 @@ import helmImage from './assets/images/game-sprites/helm_plume.png'
 import swordImage from './assets/images/game-sprites/sword_3.png'
 
 class Tile extends Component {
-  // constructor (props) {
-  //   super(props)
-  // }
-
-  // componentWillReceiveProps (nextProps) {
-  //   if (this.props.tileData.occupier === 'hero') {
-  //     console.log('tileData:',this.props.tileData,'nextProps',nextProps.tileData)
-  //   }
-  // }
 
   shouldComponentUpdate (nextProps) {
-    // render only tile that had the hero and tile that now has the hero:
+    // re-render every tile if darkness is toggled:
+    if (this.props.darkness !== nextProps.darkness) {
+      return true
+    }
+    // update tiles part of the hero's line of sight:
+    if (this.props.darkness && this.isNearHero(nextProps.heroPosition, true)){
+      return true
+    }
+    // render only the tile that had the hero and the tile that now has the hero:
     if ((nextProps.heroPosition.x === nextProps.tileData.rowIndex 
         && nextProps.heroPosition.y === nextProps.tileData.colIndex)
         ||
-        (nextProps.oldPosition.x === nextProps.tileData.rowIndex
-        && nextProps.oldPosition.y === nextProps.tileData.colIndex)){
+        (nextProps.oldHeroPosition.x === nextProps.tileData.rowIndex
+        && nextProps.oldHeroPosition.y === nextProps.tileData.colIndex)){
       return true
     }
     return false
   }
 
   // check if this tile is within the hero's line of sight:
-  isNearHero () {
-    const xOffset = Math.abs(this.props.heroPosition.x - this.props.tileData.rowIndex)
-    const yOffset = Math.abs(this.props.heroPosition.y - this.props.tileData.colIndex)
-    if(xOffset < this.props.lineOfSight && yOffset < this.props.lineOfSight) {
+  isNearHero (heroPosition, extraBorder) {
+    const xOffset = Math.abs(heroPosition.x - this.props.tileData.rowIndex)
+    const yOffset = Math.abs(heroPosition.y - this.props.tileData.colIndex)
+    let rangeX = this.props.lineOfSight
+    let rangeY = this.props.lineOfSight
+    if (extraBorder) { // consider also one extra row and columns outside line of sight
+      rangeX++
+      rangeY++
+    }
+    if(xOffset < rangeX && yOffset < rangeY) {
       return true
     }
     return false
   }
 
   render () {
+    // if(this.props.tileData.id==='0-0') console.log('in tile hero position:',this.props.heroPosition)
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
     let img = []
     switch (this.props.tileData.occupier) {
@@ -108,7 +114,7 @@ class Tile extends Component {
     default:
       break
     }
-    if (this.props.darkness && this.props.tileData.occupier !== 'hero' && !this.isNearHero()) {
+    if (this.props.darkness && this.props.tileData.occupier !== 'hero' && !this.isNearHero(this.props.heroPosition, false)) {
       classes += ' darkness'
     }
     
