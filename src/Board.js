@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Tile from './Tile'
 import Hero from './Hero'
-// import DarknessButton from './DarknessButton'
 import _ from 'lodash'
 import $ from 'jquery'
 
@@ -292,7 +291,6 @@ class Board extends Component {
   }
 
   render () {
-    console.log('rendering board...') //TEST
     return (
       <div>
         <div id='boardContainer'>
@@ -332,6 +330,7 @@ class Board extends Component {
           centerViewToHero={this.centerViewToHero.bind(this)}
           heroStats={this.props.heroStats}
           heroItems={this.state.heroItems}
+          startNewGame={this.props.startNewGame}
         />
       </div>
     )

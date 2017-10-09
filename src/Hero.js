@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import StatusBar from './StatusBar'
 import DarknessButton from './DarknessButton'
+import NewGameButton from './NewGameButton'
 import $ from 'jquery'
 
 class Hero extends Component {
@@ -265,6 +266,10 @@ class Hero extends Component {
         <StatusBar stats={this.state.heroStats}/>
         <DarknessButton 
           toggleDarkness={this.props.toggleDarkness} 
+        />
+        &nbsp;
+        <NewGameButton 
+          newGame={this.props.startNewGame} 
         />
       </div>
     )
