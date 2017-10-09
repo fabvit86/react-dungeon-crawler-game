@@ -1,17 +1,42 @@
 // dumb component that shows hero's stats
 import React from 'react'
+import { Badge, Button } from 'reactstrap'
 
 const StatusBar = ({stats}) => {
   return (
     <div id='statusBar'>
       <table id='statsTable'><tbody>
         <tr>
-          <td className='level'>Level:<br></br><span className='level'>{stats.level}</span></td>
-          <td className='untilNextLvl'>until next lvl:<br></br><span className='untilNextLvl'>{stats.nextLvlExp - stats.exp} EXP</span></td>
-          <td className='health'>Health:<br></br><span className='health'>{`${stats.health}/${stats.maxHealth}`}</span></td>
-          <td className='attack'>Attack:<br></br><span className='attack'>{stats.attack}</span></td>
-          <td className='weapon'>Weapon:<br></br><span className='weapon'>{stats.weapon}</span></td>
-          <td className='resistance'>Resistance:<br></br><span className='resistance'>{stats.resistance}</span></td>
+          <td className='level'>
+            <Button color="primary" outline>
+              Level <Badge id='levelBadge' color="primary">{stats.level}</Badge>
+            </Button>
+          </td>
+          <td className='untilNextLvl'>
+            <Button color="primary" outline>
+              Until Next Lvl <Badge id='untilNextLvlBadge' color="primary">{stats.nextLvlExp - stats.exp} EXP</Badge>
+            </Button>
+          </td>
+          <td className='health'>
+            <Button color="danger" outline>
+              Health <Badge id='healthBadge' color="danger">{`${stats.health}/${stats.maxHealth}`}</Badge>
+            </Button>
+          </td>
+          <td className='weapon'>
+            <Button color="success" outline>
+              Weapon <Badge id='weaponBadge' color="success">{stats.weapon}</Badge>
+            </Button>
+          </td>
+          <td className='attack'>
+            <Button color="dark" outline>
+              Attack <Badge id='attackBadge' color="dark">{stats.attack}</Badge>
+            </Button>
+          </td>
+          <td className='resistance'>
+            <Button color="info" outline>
+              Resistance <Badge id='resistanceBadge' color="info">{stats.resistance}</Badge>
+            </Button>
+          </td>
         </tr>
       </tbody></table>
     </div>

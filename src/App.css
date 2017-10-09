@@ -1,9 +1,19 @@
+body {
+  background-color: moccasin;
+}
+
+h1.title {
+  color: darkred;
+  font-family: fantasy;
+  margin-top: 20px;
+}
+
 .App {
   text-align: center;
 }
 
 #boardContainer {
-  height: 500px;
+  max-height: 500px;
   overflow: scroll;
 }
 

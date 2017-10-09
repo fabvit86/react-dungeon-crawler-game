@@ -101,7 +101,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>React Dungeon Crawler Game</h1>
+        <h1 className="title">React Dungeon Crawler Game</h1>
         <Board
           key={this.state.gameId}
           rows={this.rows}

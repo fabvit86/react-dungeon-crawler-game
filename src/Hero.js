@@ -269,7 +269,7 @@ class Hero extends Component {
   }
 
   toggleModal () {
-
+    window.removeEventListener('keydown', this.bound_moveHero, true)
     this.setState({ showModal: !this.state.showModal })
   }
 
@@ -277,7 +277,7 @@ class Hero extends Component {
     let modalTitle, modalBody
     if (this.state.heroStats.health <= 0) {
       modalTitle = 'You Died!'
-      modalBody = 'Try to find treasure chests to acquire gear and fight more monsters to level up.'
+      modalBody = 'Try searching for treasure chests to acquire gear and fight more monsters to level up.'
     } else {
       modalTitle = 'You beat the final Boss! Congratulation!'
       modalBody = 'Now go take a shower, you stink of demon\' flash.'
