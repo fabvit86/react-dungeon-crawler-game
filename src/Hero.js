@@ -6,17 +6,10 @@ import $ from 'jquery'
 class Hero extends Component {
   constructor (props) {
     super(props)
-    this.pickedUpItems = []
+    this.pickedUpItems = this.props.heroItems
     this.state = {
       position: this.props.position, // x and y coordinates
-      health: 100,
-      maxHealth: 100,
-      attack: 10, // increses with weapon item
-      level: 1,
-      exp: 0,
-      nextLvlExp: 15,
-      weapon: 'bare fists',
-      resistance: 0 // increses with armor items
+      heroStats: this.props.heroStats
     }
     this.bound_moveHero = this.moveHero.bind(this) // needed to clean event listener
   }
@@ -41,22 +34,24 @@ class Hero extends Component {
     const pickedItem = this.getPicketUpItem(itemX, itemY)
     this.pickedUpItems.push(pickedItem)
     // increase hero parameters:
+    let heroStats = this.state.heroStats
     switch (pickedItem.itemType) {
     case 'armor':
-      this.setState({resistance: this.state.resistance + pickedItem.resistance })
+      heroStats.resistance = this.state.heroStats.resistance + pickedItem.resistance
+      this.setState({heroStats: heroStats})
       break
     case 'weapon':
-      this.setState({
-        attack: this.state.attack + pickedItem.attack,
-        weapon: pickedItem.itemName
-      })
+      heroStats.attack = this.state.heroStats.attack + pickedItem.attack
+      heroStats.weapon = pickedItem.itemName
+      this.setState({heroStats: heroStats})
       break
     case 'potion': {
-      let newHealth = this.state.health + pickedItem.health
-      if (newHealth > this.state.maxHealth) {
-        newHealth = this.state.maxHealth
+      let newHealth = this.state.heroStats.health + pickedItem.health
+      if (newHealth > this.state.heroStats.maxHealth) {
+        newHealth = this.state.heroStats.maxHealth
       }
-      this.setState({ health: newHealth })
+      heroStats.health = newHealth
+      this.setState({heroStats: heroStats})
       break
     }
     default:
@@ -99,32 +94,33 @@ class Hero extends Component {
       return true
     }
     // hero's attack
-    engagedEnemy.health -= this.damageDealtCalculator(this.state.attack)
+    engagedEnemy.health -= this.damageDealtCalculator(this.state.heroStats.attack)
+    let heroStats = this.state.heroStats
     if (engagedEnemy.health <= 0) { // enemy defeated
-      const newXP = this.state.exp + engagedEnemy.givenXP
+      const newXP = this.state.heroStats.exp + engagedEnemy.givenXP
       // increse hero's exp:
-      this.setState({ exp: this.state.exp + engagedEnemy.givenXP })
+      heroStats.exp = newXP
       // level up:
-      if (newXP >= this.state.nextLvlExp) {
-        this.setState({ 
-          level: this.state.level + 1,
-          nextLvlExp: this.nextLvlCalculator(this.state.level + 1),
-          attack: this.state.attack + 3,
-          resistance: this.state.resistance + 2,
-          health: this.state.maxHealth + 5,
-          maxHealth: this.state.maxHealth + 5,
-          exp: 0
-        })
+      if (newXP >= this.state.heroStats.nextLvlExp) {
+        heroStats.level = this.state.heroStats.level + 1
+        heroStats.nextLvlExp = this.nextLvlCalculator(this.state.heroStats.level + 1)
+        heroStats.attack = this.state.heroStats.attack + 3
+        heroStats.resistance = this.state.heroStats.resistance + 2
+        heroStats.health = this.state.heroStats.maxHealth + 5
+        heroStats.maxHealth = this.state.heroStats.maxHealth + 5
+        heroStats.exp = 0
       }
+      this.setState({heroStats: heroStats})
       return true
     }
     // enemy still alive, enemy's attack: 
     else {
-      this.setState({ health: this.state.health - (this.damageDealtCalculator(engagedEnemy.attack) - this.state.resistance) })
+      heroStats.health = this.state.heroStats.health - (this.damageDealtCalculator(engagedEnemy.attack) - this.state.heroStats.resistance)
+      this.setState({heroStats: heroStats})
       $('#heroImage').css('background-color', 'red')
       setTimeout(() => $('#heroImage').css('background-color', 'green'), 50)
       // check hero's health:
-      if (this.state.health <= 0) {
+      if (this.state.heroStats.health <= 0) {
         // TODO: game over
       }
       return false
@@ -231,7 +227,7 @@ class Hero extends Component {
         && $(newTileSelector).hasClass('roomTile')) {
       // hit the exit door:
       if ($(newTileSelector).hasClass('exitDoor')) {
-        this.props.goToFinalDungeon()
+        this.props.goToFinalDungeon(this.state.heroStats, this.pickedUpItems)
       }
       // hit an item chest:
       else if ($(newTileSelector).hasClass('itemTile')) {
@@ -266,7 +262,7 @@ class Hero extends Component {
   render () {
     return (
       <div id='hero'>
-        <StatusBar stats={this.state}/>
+        <StatusBar stats={this.state.heroStats}/>
         <DarknessButton 
           toggleDarkness={this.props.toggleDarkness} 
         />

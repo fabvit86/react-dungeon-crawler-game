@@ -8,7 +8,6 @@ import $ from 'jquery'
 class Board extends Component {
   constructor (props) {
     super(props)
-    console.log('calling board constructor...', 'final dungeon=', this.props.finalDungeon)
     this.rooms = []
     this.enemies = []
     this.numberOfRooms = 0
@@ -35,7 +34,7 @@ class Board extends Component {
       darkness: this.props.darkness,
       oldHeroPosition: this.initialHeroPosition,
       heroPosition: this.initialHeroPosition,
-      heroItems: []
+      heroItems: this.props.heroItems
     }
   }
 
@@ -331,6 +330,8 @@ class Board extends Component {
           updateHeroToParent={this.updateHero.bind(this)}
           toggleDarkness={this.toggleDarkness.bind(this)}
           centerViewToHero={this.centerViewToHero.bind(this)}
+          heroStats={this.props.heroStats}
+          heroItems={this.state.heroItems}
         />
       </div>
     )
