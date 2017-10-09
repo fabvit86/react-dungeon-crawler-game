@@ -266,11 +266,20 @@ class Board extends Component {
   }
 
   toggleDarkness () {
-    // console.log('darkness:',!this.state.darkness, 'HeroPosition:',this.state.heroPosition)
     this.setState({ 
       darkness: !this.state.darkness
-      // 
     })
+  }
+
+  // center the div around the tile containing the hero:
+  centerViewToHero () {
+    const minContainerWidth = Math.min($(window).width(), $('#board').width())
+    const heroTileTopPos = $('.tile.heroTile').position().top
+    const heroTileLeftPos = $('.tile.heroTile').position().left
+    const halfContainerHeight = $('#boardContainer').height() / 2
+    const halfContainerWidth = minContainerWidth / 2
+    $('#boardContainer').scrollTop(heroTileTopPos - halfContainerHeight)
+    $('#boardContainer').scrollLeft(heroTileLeftPos - halfContainerWidth)
   }
 
   componentDidMount () {
@@ -280,6 +289,7 @@ class Board extends Component {
     const boardHeight = this.props.rows * (tileSize)
     $('#board').css('width', boardWidth)
     $('#board').css('height', boardHeight)
+    this.centerViewToHero()
   }
 
   render () {
@@ -320,6 +330,7 @@ class Board extends Component {
           darkness={this.state.darkness}
           updateHeroToParent={this.updateHero.bind(this)}
           toggleDarkness={this.toggleDarkness.bind(this)}
+          centerViewToHero={this.centerViewToHero.bind(this)}
         />
       </div>
     )

@@ -21,19 +21,7 @@ class Hero extends Component {
     this.bound_moveHero = this.moveHero.bind(this) // needed to clean event listener
   }
 
-  // center the div around the tile containing the hero:
-  centerViewToHero () {
-    const minContainerWidth = Math.min($(window).width(), $('#board').width())
-    const heroTileTopPos = $('.tile.heroTile').position().top
-    const heroTileLeftPos = $('.tile.heroTile').position().left
-    const halfContainerHeight = $('#boardContainer').height() / 2
-    const halfContainerWidth = minContainerWidth / 2
-    $('#boardContainer').scrollTop(heroTileTopPos - halfContainerHeight)
-    $('#boardContainer').scrollLeft(heroTileLeftPos - halfContainerWidth)
-  }
-
   componentDidMount () {
-    this.centerViewToHero()
     // add event listener:
     window.addEventListener('keydown', this.bound_moveHero, true)
   }
@@ -74,7 +62,6 @@ class Hero extends Component {
     default:
       break
     }
-    console.log(this.state) //TEST
   }
 
   // shows a tooltip about the item picked up:
@@ -266,7 +253,7 @@ class Hero extends Component {
       }
       if (moveOn) {
         // center the view:
-        this.centerViewToHero()
+        this.props.centerViewToHero()
         // send new hero info to the parent:
         this.props.updateHeroToParent({x: nextX, y: nextY}, this.state.position, this.pickedUpItems)
         // update hero position:
@@ -277,13 +264,10 @@ class Hero extends Component {
   }
 
   render () {
-    // console.log('in hero position:', this.state.position)
-    // console.log('rendering hero...','hero:',this.state, 'enemies:',this.props.enemies) // TEST
     return (
       <div id='hero'>
         <StatusBar stats={this.state}/>
         <DarknessButton 
-          // heroPosition={this.state.position}
           toggleDarkness={this.props.toggleDarkness} 
         />
       </div>
