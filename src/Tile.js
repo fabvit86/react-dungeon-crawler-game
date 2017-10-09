@@ -52,7 +52,6 @@ class Tile extends Component {
   }
 
   render () {
-    // if(this.props.tileData.id==='0-0') console.log('in tile hero position:',this.props.heroPosition)
     let classes = 'tile ' + this.props.tileData.status + ' room' + this.props.tileData.room
     let img = []
     switch (this.props.tileData.occupier) {
@@ -81,7 +80,6 @@ class Tile extends Component {
           break
         }
       }
-      // console.log('rendering hero tile:',this.props.tileData.id,'classes:',classes, 'heroPos:',this.props.heroPosition, 'heroItems:',this.props.heroItems) //TEST
       break
     case 'item':
       classes += ' itemTile'

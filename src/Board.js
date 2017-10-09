@@ -74,8 +74,6 @@ class Board extends Component {
     // find the random starting coordinate to place the first room:
     const x = this.getRandomNumb(0, this.props.rows - verticalSide)
     const y = this.getRandomNumb(0, this.props.columns - horizontalSide)
-    // const horizontalSide = 8, verticalSide = 8 // TEST
-    // const x = 10, y = 0 //TEST
     // place the first room:
     ;for (let i = x; i < x + verticalSide; i++) {
       for (let j = y; j < y + horizontalSide; j++) {

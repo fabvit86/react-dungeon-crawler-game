@@ -12,8 +12,8 @@ class App extends Component {
       heroItems: []
     }
     // default board values:
-    this.rows = 20//60
-    this.columns = 20//70
+    this.rows = 50
+    this.columns = 60
     this.minRooms = 15
     this.maxRooms = 20
     this.minRoomSide = 8
@@ -36,7 +36,7 @@ class App extends Component {
       potionsIndex++
     }
     this.enemies = this.createEnemies()
-    this.finalBoss = [{enemyType: 'bossEnemy', health: 150, attack: 60, givenXP: 50, level: 1}]
+    this.finalBoss = [{enemyType: 'bossEnemy', health: 100, attack: 50, givenXP: 50, level: 1}]
     this.finalDungeon = false
   }
 
@@ -48,9 +48,9 @@ class App extends Component {
       let enemiesArray = []
       while (enemiesIndex < this.repeatUniqueEnemies) {
         enemiesArray.push(
-          {enemyType: 'smallEnemy', health: 15, attack: 20, givenXP: 10, level: 1},
-          {enemyType: 'medEnemy', health: 25, attack: 35, givenXP: 15, level: 1},
-          {enemyType: 'largeEnemy', health: 40, attack: 50, givenXP: 20, level: 1})
+          {enemyType: 'smallEnemy', health: 15, attack: 18, givenXP: 10, level: 1},
+          {enemyType: 'medEnemy', health: 25, attack: 25, givenXP: 15, level: 1},
+          {enemyType: 'largeEnemy', health: 40, attack: 35, givenXP: 20, level: 1})
         enemiesIndex++
       }
       return enemiesArray
