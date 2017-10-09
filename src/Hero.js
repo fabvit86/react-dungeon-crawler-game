@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import StatusBar from './StatusBar'
 import DarknessButton from './DarknessButton'
 import NewGameButton from './NewGameButton'
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap'
 import $ from 'jquery'
 
 class Hero extends Component {
@@ -10,7 +11,8 @@ class Hero extends Component {
     this.pickedUpItems = this.props.heroItems
     this.state = {
       position: this.props.position, // x and y coordinates
-      heroStats: this.props.heroStats
+      heroStats: this.props.heroStats,
+      showModal: false
     }
     this.bound_moveHero = this.moveHero.bind(this) // needed to clean event listener
   }
@@ -111,6 +113,11 @@ class Hero extends Component {
         heroStats.maxHealth = this.state.heroStats.maxHealth + 5
         heroStats.exp = 0
       }
+      if (engagedEnemy.enemyType === 'bossEnemy') {
+        // final boss defeated:
+        this.toggleModal()
+        return true
+      }
       this.setState({heroStats: heroStats})
       return true
     }
@@ -122,7 +129,8 @@ class Hero extends Component {
       setTimeout(() => $('#heroImage').css('background-color', 'green'), 50)
       // check hero's health:
       if (this.state.heroStats.health <= 0) {
-        // TODO: game over
+        // Game Over:
+        this.toggleModal()
       }
       return false
     }
@@ -260,7 +268,20 @@ class Hero extends Component {
     event.preventDefault()
   }
 
+  toggleModal () {
+
+    this.setState({ showModal: !this.state.showModal })
+  }
+
   render () {
+    let modalTitle, modalBody
+    if (this.state.heroStats.health <= 0) {
+      modalTitle = 'You Died!'
+      modalBody = 'Try to find treasure chests to acquire gear and fight more monsters to level up.'
+    } else {
+      modalTitle = 'You beat the final Boss! Congratulation!'
+      modalBody = 'Now go take a shower, you stink of demon\' flash.'
+    }
     return (
       <div id='hero'>
         <StatusBar stats={this.state.heroStats}/>
@@ -271,6 +292,15 @@ class Hero extends Component {
         <NewGameButton 
           newGame={this.props.startNewGame} 
         />
+        <Modal isOpen={this.state.showModal} toggle={this.toggleModal.bind(this)} className='myModal'>
+          <ModalHeader toggle={this.toggleModal.bind(this)}>{modalTitle}</ModalHeader>
+          <ModalBody>
+            <p>{modalBody}</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button color='primary' onClick={this.props.startNewGame}>New Game</Button>
+          </ModalFooter>
+        </Modal>
       </div>
     )
   }
