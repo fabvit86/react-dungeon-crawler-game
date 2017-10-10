@@ -74,3 +74,8 @@ img#heroImage {
   left: 0px; 
   will-change: transform;
 }
+
+#footer {
+  margin-top: 20px;
+}
+
