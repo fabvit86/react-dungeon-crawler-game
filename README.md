@@ -25,3 +25,5 @@ This project is part of the FreeCodeCamp Data Visualization Certification.
 Built with React.js
 
 All game sprites downloaded from OpenGameArt [https://opengameart.org/content/dungeon-crawl-32x32-tiles-supplemental]
+
+Live Demo (Here)[https://codepen.io/fabvit86/full/dVeYBW/]
