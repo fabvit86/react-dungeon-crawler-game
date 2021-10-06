@@ -279,8 +279,8 @@ class Hero extends Component {
       modalTitle = 'You Died!'
       modalBody = 'Try searching for treasure chests to acquire gear and fight more monsters to level up.'
     } else {
-      modalTitle = 'You beat the final Boss! Congratulation!'
-      modalBody = 'Now go take a shower, you stink of demon\' flash.'
+      modalTitle = 'You beat the final Boss! Congratulations!'
+      modalBody = 'Now go take a shower, you stink of demon\'s flash.'
     }
     return (
       <div id='hero'>
