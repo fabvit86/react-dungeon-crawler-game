@@ -73,7 +73,7 @@ class Hero extends Component {
     $('#tooltipDiv').css('transform', 'translate3d('+tooltipLeft+'px, '+tooltipTop+'px, 0px)')
     $('#tooltipDiv .arrow').css('left', tooltipDivWidth / 2 + 'px')
     $('#tooltipDiv').addClass('show')
-    setTimeout(() => $('#tooltipDiv').removeClass('show'), 600)
+    setTimeout(() => $('#tooltipDiv').removeClass('show'), 1200)
   }
 
   // calculate exp needed to level up:
