@@ -58,7 +58,7 @@ class Tile extends Component {
     case 'hero':
       classes += ' heroTile'
       img.push(<img key='heroImage' className="gameSprite" id="heroImage" src={heroImage} alt="hero"/>)
-      ;for (let i = 0; i < this.props.heroItems.length;i++) {
+      for (let i = 0; i < this.props.heroItems.length;i++) {
         const currentItem = this.props.heroItems[i]
         switch (currentItem.itemName) {
         case 'chest armor':

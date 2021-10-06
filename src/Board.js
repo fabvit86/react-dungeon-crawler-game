@@ -42,9 +42,9 @@ class Board extends Component {
     this.numberOfRooms = this.getRandomNumb(this.props.minRooms, this.props.maxRooms)
     // create the base board:
     let board = []
-    ;for (let r = 0; r < n; r++) {
+    for (let r = 0; r < n; r++) {
       let row = []
-      ;for (let c = 0; c < m; c++) {
+      for (let c = 0; c < m; c++) {
         row.push({
           id: `${r}-${c}`,
           rowIndex: r,
@@ -75,7 +75,7 @@ class Board extends Component {
     const x = this.getRandomNumb(0, this.props.rows - verticalSide)
     const y = this.getRandomNumb(0, this.props.columns - horizontalSide)
     // place the first room:
-    ;for (let i = x; i < x + verticalSide; i++) {
+    for (let i = x; i < x + verticalSide; i++) {
       for (let j = y; j < y + horizontalSide; j++) {
         if (i === x || j === y || i === x + verticalSide - 1 || j === y + horizontalSide - 1) {
           board[i][j].status = 'roomTile roomBorder' // indicates that this tile belongs to a room border
