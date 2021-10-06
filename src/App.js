@@ -20,7 +20,7 @@ class App extends Component {
     this.maxRoomSide = 15
     this.repeatUniqueEnemies = 5
     this.numberOfPotions = 8
-    this.lineOfSight = 5
+    this.lineOfSight = 6
     this.darkness = true
     this.items = [
       {itemType: 'armor', itemName: 'chest armor', resistance: 5}, 
